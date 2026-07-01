@@ -1,0 +1,42 @@
+# Environment configuration
+.env
+
+# Python compilation files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Logs directories
+logs/
+trading_bot/logs/
+
+# Raw/Processed Data exclusions (keeps directories but ignores content)
+data/processed/*
+data/exports/*
+data/uploads/*
+analytics/outputs/*
+
+# Keep structure with gitkeeps
+!data/processed/.gitkeep
+!data/exports/.gitkeep
+!data/uploads/.gitkeep
+!analytics/outputs/.gitkeep
+!trading_bot/logs/.gitkeep
+!logs/.gitkeep
