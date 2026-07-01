@@ -163,3 +163,9 @@ def get_logger(name: str) -> logging.Logger:
         logging.Logger instance.
     """
     return logging.getLogger(name)
+
+
+# Convenient module-level logger instances for imports
+analytics_logger = logging.getLogger("analytics")
+bot_logger = logging.getLogger("bot")
+

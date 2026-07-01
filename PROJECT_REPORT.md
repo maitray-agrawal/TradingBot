@@ -346,12 +346,11 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] Unit Testing Suite (`tests/test_infra.py`)
 - [x] Ingest data files dynamically (Phase 2 - Dataset Ingestion Engine: file scanners, dataset type detector, schema mapper, validation rules, data registry, mock upload handlers, and master dataset loader)
 - [x] Unit Testing Suite for Ingestion Engine (`tests/test_ingestion.py` covering multiple file types and failure conditions)
+- [x] Preprocessing & Cleaning (Phase 3 - Cleanse headers, casing, values, handle timezone-naive UTC timestamp formats, drop empty inputs, handle duplicates)
+- [x] Feature Engineering & Chronological Merger (Phase 4 - Calculate positions, values, volatility, PnLs and perform nearest-date merging)
+- [x] Analytics & Statistical Intelligence Engine (Phase 5 & 6 - Calculate sub-analysis metrics, run correlation/distribution profiling, summarize textual insights, and export results)
 
 ### Pending Tasks
-- [ ] Normalize and clean headers (Phase 3)
-- [ ] Build feature engineering modules (Phase 4)
-- [ ] Implement dataset merging logic (Phase 4)
-- [ ] Establish statistical analysis engine (Phase 5 & 6)
 - [ ] Create Plotly and static charts (Phase 7)
 - [ ] Write report compilation logic (Phase 8)
 - [ ] Code strategy recommendation engine (Phase 9)
@@ -362,6 +361,14 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## Version History
+
+### Version 0.5.0 (2026-07-01)
+- **Status**: Analytics & Intelligence Engine Completed.
+- **Details**: Built modular calculators for Trader, Market, Sentiment, Coin, Performance, Risk, Time, and Correlation analysis. Implemented natural language insights/warning generators and the master AnalyticsEngine to run all analyses and export JSON, CSV, and Markdown executive summaries. Created tests/test_analysis.py with mock dataset to verify calculations and exports under pytest.
+
+### Version 0.4.0 (2026-07-01)
+- **Status**: Data Preprocessing & Feature Engineering Completed.
+- **Details**: Implemented the normalizer pipeline, feature engineer generator, and chronological nearest-date datasets merger, mapping and writing files to data/processed.
 
 ### Version 0.3.0 (2026-07-01)
 - **Status**: Dataset Ingestion Engine Completed.
@@ -385,6 +392,6 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## AI Continuation Notes
-- To continue the project, refer to the next roadmap item: **Phase 3: Preprocessing & Cleaning**.
-- Ingestion files are now successfully loaded and classified. The next step is to clean these dataframes (deduplication, symbol normalizer, uppercase formatting, timestamp alignment to microsecond-precision timezone-naive `datetime64[ns]`, trade side validation to BUY/SELL, and threshold/outlier anomaly filtering).
+- To continue the project, refer to the next roadmap item: **Phase 7: Charting & Visualization**.
+- Build interactive Plotly chart generators for cumulative PnL lines, win/loss pie charts, and Fear & Greed sentiment return box/violin plots.
 
