@@ -20,7 +20,6 @@ import numpy as np
 import pandas as pd
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Directory Fixtures
 # ---------------------------------------------------------------------------
@@ -115,9 +114,7 @@ def sample_fear_greed_df() -> pd.DataFrame:
 
 
 @pytest.fixture()
-def sample_merged_df(
-    sample_trader_df: pd.DataFrame, sample_fear_greed_df: pd.DataFrame
-) -> pd.DataFrame:
+def sample_merged_df(sample_trader_df: pd.DataFrame, sample_fear_greed_df: pd.DataFrame) -> pd.DataFrame:
     """Return a merged trader + sentiment DataFrame."""
     fg = sample_fear_greed_df.copy()
     fg["date"] = fg["timestamp"].dt.normalize()
@@ -129,9 +126,7 @@ def sample_merged_df(
         on="date",
         direction="nearest",
     )
-    return merged.rename(
-        columns={"value": "fg_value", "classification": "fg_classification"}
-    )
+    return merged.rename(columns={"value": "fg_value", "classification": "fg_classification"})
 
 
 # ---------------------------------------------------------------------------
@@ -148,9 +143,7 @@ def trader_csv_file(tmp_data_dir: Path, sample_trader_df: pd.DataFrame) -> Path:
 
 
 @pytest.fixture()
-def fear_greed_csv_file(
-    tmp_data_dir: Path, sample_fear_greed_df: pd.DataFrame
-) -> Path:
+def fear_greed_csv_file(tmp_data_dir: Path, sample_fear_greed_df: pd.DataFrame) -> Path:
     """Write a fear & greed CSV to the temp raw directory and return its path."""
     path = tmp_data_dir / "raw" / "fear_greed_index.csv"
     sample_fear_greed_df.to_csv(path, index=False)
@@ -168,9 +161,7 @@ def mock_binance_client() -> MagicMock:
     client = MagicMock()
 
     # Account & balance
-    client.futures_account_balance.return_value = [
-        {"asset": "USDT", "balance": "10000.00", "withdrawAvailable": "8500.00"}
-    ]
+    client.futures_account_balance.return_value = [{"asset": "USDT", "balance": "10000.00", "withdrawAvailable": "8500.00"}]
     client.futures_account.return_value = {
         "totalWalletBalance": "10000.00",
         "totalUnrealizedProfit": "150.00",

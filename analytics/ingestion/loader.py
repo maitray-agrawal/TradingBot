@@ -11,8 +11,7 @@ import pandas as pd
 
 from analytics.ingestion.dataset_detector import DatasetDetector
 from analytics.ingestion.dataset_registry import DatasetRegistry
-from analytics.ingestion.metadata import (Dataset, DatasetMetadata,
-                                          QualityReport, ValidationResult)
+from analytics.ingestion.metadata import Dataset, DatasetMetadata, QualityReport, ValidationResult
 from analytics.ingestion.schema_mapper import SchemaMapper
 from analytics.ingestion.validator import DatasetValidator
 from config.enums import DatasetType
@@ -83,9 +82,7 @@ class IngestionEngine:
             logger.error(f"Failed to read file {file_path}: {e}")
             raise DatasetError(f"Corrupted or unreadable file: {e}")
 
-        raise ValidationError(
-            f"File type {file_type} is not supported by read routine."
-        )
+        raise ValidationError(f"File type {file_type} is not supported by read routine.")
 
     def _auto_detect_and_convert_dates(self, df: pd.DataFrame) -> pd.DataFrame:
         """Finds date/timestamp columns and standardizes them to timezone-naive datetime.
@@ -101,12 +98,7 @@ class IngestionEngine:
             col_type = df[col].dtype
 
             # Identify if column name indicates date/time, or is already datetime, or contains UNIX values
-            is_date_col = (
-                "date" in col_str
-                or "time" in col_str
-                or "timestamp" in col_str
-                or "epoch" in col_str
-            )
+            is_date_col = "date" in col_str or "time" in col_str or "timestamp" in col_str or "epoch" in col_str
 
             if is_date_col or str(col_type).startswith("datetime"):
                 logger.debug(f"Auto-detecting datetime format for column: {col}")
@@ -120,16 +112,12 @@ class IngestionEngine:
                     first_val = sample.iloc[0]
 
                     # Numeric UNIX timestamp detection
-                    if isinstance(first_val, (int, float)) or str(col_type).startswith(
-                        ("int", "float")
-                    ):
+                    if isinstance(first_val, (int, float)) or str(col_type).startswith(("int", "float")):
                         # Verify if UNIX milliseconds or UNIX seconds
                         # Mean values > 1e11 indicate millisecond timestamps (Binance format)
                         mean_val = sample.mean()
                         if mean_val > 1e11:
-                            df[col] = pd.to_datetime(
-                                df[col], unit="ms", errors="coerce"
-                            )
+                            df[col] = pd.to_datetime(df[col], unit="ms", errors="coerce")
                         else:
                             df[col] = pd.to_datetime(df[col], unit="s", errors="coerce")
                     else:
@@ -225,9 +213,7 @@ class IngestionEngine:
             null_pct = (total_nulls / total_cells) * 100
             deduction = min(30.0, null_pct * 0.8)
             score -= deduction
-            issues.append(
-                f"Contains missing/null cell values: {total_nulls} ({null_pct:.2f}%)"
-            )
+            issues.append(f"Contains missing/null cell values: {total_nulls} ({null_pct:.2f}%)")
             recommendations.append("Impute or filter out null observations.")
 
         # Check critical fields depending on dataset type
@@ -237,27 +223,16 @@ class IngestionEngine:
                     col_nulls = df[col].isna().sum()
                     if col_nulls > 0:
                         score -= 15.0
-                        issues.append(
-                            f"Critical trade column '{col}' has {col_nulls} null entries."
-                        )
-                        recommendations.append(
-                            f"Clean or filter incomplete values in '{col}'."
-                        )
+                        issues.append(f"Critical trade column '{col}' has {col_nulls} null entries.")
+                        recommendations.append(f"Clean or filter incomplete values in '{col}'.")
 
                     # Check for anomalous negative prices or sizes
-                    if (
-                        col in ("execution_price", "size")
-                        and df[col].dtype.kind in "ijf"
-                    ):
+                    if col in ("execution_price", "size") and df[col].dtype.kind in "ijf":
                         negatives = (df[col] <= 0).sum()
                         if negatives > 0:
                             score -= 10.0
-                            issues.append(
-                                f"Column '{col}' contains negative or zero values: {negatives} records."
-                            )
-                            recommendations.append(
-                                f"Filter out zero or negative observations in '{col}'."
-                            )
+                            issues.append(f"Column '{col}' contains negative or zero values: {negatives} records.")
+                            recommendations.append(f"Filter out zero or negative observations in '{col}'.")
 
         elif dataset_type == DatasetType.FEAR_GREED:
             for col in ["value", "classification", "timestamp"]:
@@ -265,32 +240,22 @@ class IngestionEngine:
                     col_nulls = df[col].isna().sum()
                     if col_nulls > 0:
                         score -= 15.0
-                        issues.append(
-                            f"Critical sentiment column '{col}' has {col_nulls} null entries."
-                        )
-                        recommendations.append(
-                            f"Clean or filter incomplete values in '{col}'."
-                        )
+                        issues.append(f"Critical sentiment column '{col}' has {col_nulls} null entries.")
+                        recommendations.append(f"Clean or filter incomplete values in '{col}'.")
 
                     # Check value bounds (0-100)
                     if col == "value" and df[col].dtype.kind in "ijf":
                         out_of_bounds = ((df[col] < 0) | (df[col] > 100)).sum()
                         if out_of_bounds > 0:
                             score -= 10.0
-                            issues.append(
-                                f"Sentiment 'value' out of standard 0-100 bounds: {out_of_bounds} records."
-                            )
-                            recommendations.append(
-                                "Clamp sentiment index values between 0 and 100."
-                            )
+                            issues.append(f"Sentiment 'value' out of standard 0-100 bounds: {out_of_bounds} records.")
+                            recommendations.append("Clamp sentiment index values between 0 and 100.")
 
         # Cap score between 0 and 100
         final_score = max(0.0, min(100.0, score))
 
         if final_score > 90.0:
-            recommendations.append(
-                "Dataset structure looks excellent. Ready for analytical pipeline."
-            )
+            recommendations.append("Dataset structure looks excellent. Ready for analytical pipeline.")
 
         return QualityReport(
             quality_score=final_score,
@@ -298,9 +263,7 @@ class IngestionEngine:
             recommendations=recommendations,
         )
 
-    def load_dataset(
-        self, file_path: str, dataset_name: Optional[str] = None
-    ) -> Dataset:
+    def load_dataset(self, file_path: str, dataset_name: Optional[str] = None) -> Dataset:
         """Loads, standardizes, validates, and registers a dataset from a file path.
 
         Args:
@@ -343,9 +306,7 @@ class IngestionEngine:
         standardized_df = self._auto_detect_and_convert_dates(standardized_df)
 
         # 7. Run validations
-        validation = self.validator.run_checks(
-            standardized_df, detected_type, raw_columns
-        )
+        validation = self.validator.run_checks(standardized_df, detected_type, raw_columns)
 
         if not validation.is_valid:
             logger.error(f"Validation failed for dataset {name}: {validation.errors}")
@@ -356,24 +317,17 @@ class IngestionEngine:
 
         # 8. Build stats & metadata
         load_time = time.perf_counter() - start_time
-        target_cols = [
-            col for col in standardized_df.columns if col in mapping.values()
-        ]
-        metadata = self._build_metadata(
-            standardized_df, path, checksum, load_time, target_cols
-        )
+        target_cols = [col for col in standardized_df.columns if col in mapping.values()]
+        metadata = self._build_metadata(standardized_df, path, checksum, load_time, target_cols)
 
         # 9. Profile Quality
-        quality = self._generate_quality_report(
-            standardized_df, detected_type, validation
-        )
+        quality = self._generate_quality_report(standardized_df, detected_type, validation)
 
         # 10. Register Dataset
         self.registry.register(name, str(path), detected_type.value, metadata)
 
         logger.info(
-            f"Ingestion finalized for '{name}' in {load_time:.4f}s. "
-            f"Quality Score: {quality.quality_score:.1f}/100"
+            f"Ingestion finalized for '{name}' in {load_time:.4f}s. " f"Quality Score: {quality.quality_score:.1f}/100"
         )
 
         return Dataset(

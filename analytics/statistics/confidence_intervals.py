@@ -17,9 +17,7 @@ class ConfidenceIntervals:
     """Calculates confidence intervals for key performance metrics."""
 
     @staticmethod
-    def calculate(
-        df: pd.DataFrame, confidence: float = 0.95
-    ) -> Dict[str, Dict[str, Any]]:
+    def calculate(df: pd.DataFrame, confidence: float = 0.95) -> Dict[str, Dict[str, Any]]:
         """Calculates confidence intervals for win rate, mean PnL, and mean size.
 
         Args:
@@ -50,9 +48,7 @@ class ConfidenceIntervals:
                     z = float(stats.norm.ppf(1 - (1 - confidence) / 2))
                     denom = 1 + (z**2) / n
                     center = (p + (z**2) / (2 * n)) / denom
-                    spread = (
-                        z * np.sqrt((p * (1 - p)) / n + (z**2) / (4 * n**2)) / denom
-                    )
+                    spread = z * np.sqrt((p * (1 - p)) / n + (z**2) / (4 * n**2)) / denom
 
                     lower = float(max(0.0, center - spread))
                     upper = float(min(1.0, center + spread))
@@ -79,9 +75,7 @@ class ConfidenceIntervals:
                     sem = float(stats.sem(pnl_series))
 
                     if sem > 0:
-                        lower, upper = stats.t.interval(
-                            confidence, df=n - 1, loc=mean_val, scale=sem
-                        )
+                        lower, upper = stats.t.interval(confidence, df=n - 1, loc=mean_val, scale=sem)
                         margin_error = float(upper - mean_val)
                     else:
                         lower, upper, margin_error = mean_val, mean_val, 0.0
@@ -108,9 +102,7 @@ class ConfidenceIntervals:
                     sem = float(stats.sem(size_series))
 
                     if sem > 0:
-                        lower, upper = stats.t.interval(
-                            confidence, df=n - 1, loc=mean_val, scale=sem
-                        )
+                        lower, upper = stats.t.interval(confidence, df=n - 1, loc=mean_val, scale=sem)
                         margin_error = float(upper - mean_val)
                     else:
                         lower, upper, margin_error = mean_val, mean_val, 0.0
@@ -124,9 +116,7 @@ class ConfidenceIntervals:
                         "method": "Student-t",
                     }
                 except Exception as e:
-                    analytics_logger.error(
-                        f"Error computing average trade size CI: {e}"
-                    )
+                    analytics_logger.error(f"Error computing average trade size CI: {e}")
 
         analytics_logger.info("Confidence intervals calculations completed.")
         return results

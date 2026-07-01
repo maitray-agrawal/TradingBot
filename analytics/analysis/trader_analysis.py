@@ -75,11 +75,7 @@ class TraderAnalysis:
             )
 
         # Ensure standard column name for account
-        account_col = (
-            "account_id"
-            if "account_id" in df.columns
-            else ("account" if "account" in df.columns else None)
-        )
+        account_col = "account_id" if "account_id" in df.columns else ("account" if "account" in df.columns else None)
         if not account_col:
             raise KeyError("Dataset is missing account/account_id column.")
 
@@ -87,12 +83,8 @@ class TraderAnalysis:
         total_traders = len(unique_traders)
 
         # Base global trade-level max profit and loss
-        maximum_profit_trade = (
-            float(df["closed_pnl"].max()) if "closed_pnl" in df.columns else 0.0
-        )
-        maximum_loss_trade = (
-            float(df["closed_pnl"].min()) if "closed_pnl" in df.columns else 0.0
-        )
+        maximum_profit_trade = float(df["closed_pnl"].max()) if "closed_pnl" in df.columns else 0.0
+        maximum_loss_trade = float(df["closed_pnl"].min()) if "closed_pnl" in df.columns else 0.0
 
         trader_profiles: Dict[str, Dict[str, Any]] = {}
         trader_summary_list = []
@@ -109,11 +101,7 @@ class TraderAnalysis:
             max_loss = float(pnl_series.min())
 
             # Volume (trade_value = size * execution_price)
-            vol_series = (
-                group["trade_value"]
-                if "trade_value" in group.columns
-                else (group["size"] * group["execution_price"])
-            )
+            vol_series = group["trade_value"] if "trade_value" in group.columns else (group["size"] * group["execution_price"])
             total_volume = float(vol_series.fillna(0.0).sum())
 
             # Win/Loss Rate: count wins vs losses
@@ -154,18 +142,14 @@ class TraderAnalysis:
             trader_summary_list.append(trader_dict)
 
         # Sort traders to generate Top 10 and Bottom 10 leaderboards
-        sorted_traders = sorted(
-            trader_summary_list, key=lambda x: x["total_pnl"], reverse=True
-        )
+        sorted_traders = sorted(trader_summary_list, key=lambda x: x["total_pnl"], reverse=True)
         top_10 = sorted_traders[:10]
         bottom_10 = sorted_traders[::-1][:10]  # Reverse to get lowest PnL first
 
         # Global average/median PnL across traders
         trader_pnls = [t["total_pnl"] for t in trader_summary_list]
         average_pnl_across_traders = float(np.mean(trader_pnls)) if trader_pnls else 0.0
-        median_pnl_across_traders = (
-            float(np.median(trader_pnls)) if trader_pnls else 0.0
-        )
+        median_pnl_across_traders = float(np.median(trader_pnls)) if trader_pnls else 0.0
 
         analytics_logger.info(f"Trader analysis completed for {total_traders} traders.")
 

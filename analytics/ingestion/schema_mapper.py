@@ -129,9 +129,7 @@ class SchemaMapper:
             mapping[col] = final_target
         return mapping
 
-    def standardize_dataframe(
-        self, df: pd.DataFrame
-    ) -> tuple[pd.DataFrame, Dict[str, str]]:
+    def standardize_dataframe(self, df: pd.DataFrame) -> tuple[pd.DataFrame, Dict[str, str]]:
         """Standardizes the headers of a DataFrame.
 
         Args:

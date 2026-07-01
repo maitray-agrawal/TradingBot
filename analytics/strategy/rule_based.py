@@ -93,9 +93,7 @@ class RuleBasedStrategy(BaseStrategy):
         super().__init__(name)
         self.config = config or StrategyConfig()
 
-    def generate_recommendation(
-        self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None
-    ) -> Dict[str, Any]:
+    def generate_recommendation(self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None) -> Dict[str, Any]:
         """Evaluates market and portfolio metrics to generate a trading recommendation.
 
         Args:
@@ -122,12 +120,8 @@ class RuleBasedStrategy(BaseStrategy):
         drawdowns = self.calculate_drawdown(df, self.config.initial_balance)
         current_dd = drawdowns["current_drawdown"]
         max_dd = drawdowns["max_drawdown"]
-        rolling_win_rate = self.calculate_rolling_win_rate(
-            df, window=self.config.rolling_window
-        )
-        trade_freq = self.calculate_trade_frequency(
-            df, window_days=self.config.frequency_window_days
-        )
+        rolling_win_rate = self.calculate_rolling_win_rate(df, window=self.config.rolling_window)
+        trade_freq = self.calculate_trade_frequency(df, window_days=self.config.frequency_window_days)
         volatility = self.calculate_volatility(df, window=self.config.rolling_window)
 
         # Store calculated metrics for transparency
@@ -177,19 +171,13 @@ class RuleBasedStrategy(BaseStrategy):
                 f"Rolling win rate ({rolling_win_rate:.2%}) has dropped below minimum threshold ({self.config.min_rolling_win_rate:.2%})."
             )
         if current_dd >= 0.08:
-            reduce_reasons.append(
-                f"Drawdown is elevated at {current_dd:.2%}, requiring exposure reduction."
-            )
+            reduce_reasons.append(f"Drawdown is elevated at {current_dd:.2%}, requiring exposure reduction.")
         if volatility > 200.0:  # Custom volatility threshold for high-variance periods
-            reduce_reasons.append(
-                f"Recent trade volatility ({volatility:.2f}) is elevated."
-            )
+            reduce_reasons.append(f"Recent trade volatility ({volatility:.2f}) is elevated.")
 
         if reduce_reasons:
             explanations.extend(reduce_reasons)
-            explanations.append(
-                "Recommend lowering execution leverage to minimize variance."
-            )
+            explanations.append("Recommend lowering execution leverage to minimize variance.")
             rec = StrategyRecommendation(
                 action=StrategyAction.REDUCE_LEVERAGE,
                 confidence_score=0.80,

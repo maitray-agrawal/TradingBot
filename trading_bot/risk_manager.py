@@ -7,6 +7,7 @@ excessive capital losses and maintain trading compliance.
 import json
 import logging
 from pathlib import Path
+
 from pydantic import BaseModel, Field
 
 from config.paths import EXPORTS_DATA_DIR
@@ -23,9 +24,7 @@ class RiskConfig(BaseModel):
     max_position_size_ratio: float = Field(
         default=0.10, ge=0.01, le=1.0, description="Max exposure value per symbol (ratio of wallet balance)."
     )
-    max_aggregate_leverage: int = Field(
-        default=20, ge=1, le=125, description="Maximum permitted leverage multiplier."
-    )
+    max_aggregate_leverage: int = Field(default=20, ge=1, le=125, description="Maximum permitted leverage multiplier.")
     max_capital_at_risk: float = Field(
         default=0.50, ge=0.05, le=1.0, description="Maximum total margin allocation (ratio of wallet balance)."
     )
@@ -46,9 +45,7 @@ class RiskManager:
         self.config = config or RiskConfig()
         self.history_path = EXPORTS_DATA_DIR / "order_history.json"
 
-    def check_order_risk(
-        self, client: BinanceTestnetClient, order: FuturesOrder, leverage: int
-    ) -> None:
+    def check_order_risk(self, client: BinanceTestnetClient, order: FuturesOrder, leverage: int) -> None:
         """Runs compliance risk evaluations before placing the order.
 
         Args:
@@ -148,7 +145,7 @@ class RiskManager:
         try:
             with open(self.history_path, "r", encoding="utf-8") as f:
                 history = json.load(f)
-            
+
             # Expecting a list of records
             if isinstance(history, list):
                 for record in history:

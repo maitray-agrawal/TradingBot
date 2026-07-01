@@ -48,9 +48,7 @@ def sample_trade_data() -> pd.DataFrame:
     df["trade_value"] = df["size"] * df["execution_price"]
     df["position_size"] = df["size"]
     df["is_profit"] = (df["closed_pnl"] > 0).astype(int)
-    df["profit_percentage"] = np.where(
-        df["trade_value"] > 0, (df["closed_pnl"] / df["trade_value"]) * 100.0, 0.0
-    )
+    df["profit_percentage"] = np.where(df["trade_value"] > 0, (df["closed_pnl"] / df["trade_value"]) * 100.0, 0.0)
     df["cumulative_pnl"] = df["closed_pnl"].cumsum()
     df["rolling_pnl"] = df["closed_pnl"].rolling(window=2, min_periods=1).sum()
     df["rolling_volume"] = df["trade_value"].rolling(window=2, min_periods=1).sum()

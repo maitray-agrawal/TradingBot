@@ -32,9 +32,7 @@ class VisualizationEngine:
             Dict[str, Any]: Manifest containing paths to all exported chart assets.
         """
         if df is None or df.empty:
-            analytics_logger.warning(
-                "Empty or None DataFrame passed to VisualizationEngine. No charts generated."
-            )
+            analytics_logger.warning("Empty or None DataFrame passed to VisualizationEngine. No charts generated.")
             return {
                 "status": "skipped",
                 "message": "Empty DataFrame",

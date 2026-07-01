@@ -8,18 +8,20 @@ the Binance Futures Testnet Trading Bot CLI.
 import logging
 import os
 from pathlib import Path
+
 import pandas as pd
+import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-import typer
 
 from analytics.ingestion import FileScanner, IngestionEngine
+
 # Config & Utils imports
 from config import ensure_directories_exist, settings
 from config.enums import DatasetType
-from utils import setup_logging
 from trading_bot.cli import bot_cli
+from utils import setup_logging
 
 logger = logging.getLogger("system")
 console = Console()
@@ -62,9 +64,7 @@ def verify_env_file() -> None:
     if env_path.is_file():
         logger.info("Local configuration file '.env' detected successfully.")
     else:
-        logger.warning(
-            "Configuration file '.env' not found. System running on fallback defaults."
-        )
+        logger.warning("Configuration file '.env' not found. System running on fallback defaults.")
 
 
 def create_demo_files_if_empty() -> None:
@@ -126,9 +126,7 @@ def display_dataset_diagnostics(dataset) -> None:
     meta_table.add_column("Value", style="white")
 
     meta = dataset.metadata
-    meta_table.add_row(
-        "Dataset Type", f"[bold green]{dataset.dataset_type.name}[/bold green]"
-    )
+    meta_table.add_row("Dataset Type", f"[bold green]{dataset.dataset_type.name}[/bold green]")
     meta_table.add_row("Size on Disk", f"{meta.file_size_bytes} bytes")
     meta_table.add_row("Memory Footprint", f"{meta.memory_usage_bytes / 1024:.2f} KB")
     meta_table.add_row("SHA-256 Checksum", meta.file_checksum[:20] + "...")
@@ -137,11 +135,7 @@ def display_dataset_diagnostics(dataset) -> None:
 
     # Data Quality Report
     qual = dataset.quality_report
-    score_color = (
-        "green"
-        if qual.quality_score > 85.0
-        else ("yellow" if qual.quality_score > 60.0 else "red")
-    )
+    score_color = "green" if qual.quality_score > 85.0 else ("yellow" if qual.quality_score > 60.0 else "red")
     qual_panel = Panel(
         f"[bold {score_color}]Quality Score: {qual.quality_score:.1f}/100.0[/bold {score_color}]\n"
         f"Issues Found: {len(qual.potential_issues)}\n"
@@ -151,9 +145,7 @@ def display_dataset_diagnostics(dataset) -> None:
     )
 
     # Column Mapping Table
-    map_table = Table(
-        title="Column Normalization Mapping", show_header=True, header_style="bold blue"
-    )
+    map_table = Table(title="Column Normalization Mapping", show_header=True, header_style="bold blue")
     map_table.add_column("Original Header")
     map_table.add_column("Mapped Clean Header")
     for orig, target in dataset.column_mapping.items():
@@ -187,9 +179,7 @@ def display_dataset_diagnostics(dataset) -> None:
 
 def run_ingestion_diagnostics() -> None:
     """Discovers, loads, and displays diagnostics for all files in the directories."""
-    console.print(
-        "\n[bold yellow]Starting Ingestion Engine Diagnostics...[/bold yellow]"
-    )
+    console.print("\n[bold yellow]Starting Ingestion Engine Diagnostics...[/bold yellow]")
 
     create_demo_files_if_empty()
 
@@ -236,9 +226,7 @@ def run_diagnostics_flow() -> None:
     logger.info(f"Binance Futures URL: {settings.testnet_url}")
 
     if not settings.binance_api_key or not settings.binance_secret_key:
-        logger.warning(
-            "Binance keys are missing. Testnet trading bot features will be locked in live mode."
-        )
+        logger.warning("Binance keys are missing. Testnet trading bot features will be locked in live mode.")
     else:
         logger.info("Binance Futures credentials found and validated.")
 

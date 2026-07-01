@@ -1,11 +1,12 @@
 """Unit tests for the Phase 8 Reporting Engine of PrimeTrade AI."""
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
 import pytest
 
-from analytics.reports.markdown_compiler import MarkdownReportCompiler
 from analytics.reports.html_compiler import HTMLReportCompiler
+from analytics.reports.markdown_compiler import MarkdownReportCompiler
 from analytics.reports.pdf_compiler import PDFReportCompiler, PrimeTradePDF
 from analytics.reports.report_engine import ReportingEngine
 
@@ -133,22 +134,22 @@ def mock_statistics_results():
 def test_markdown_report_compiler(mock_analytics_results, mock_statistics_results):
     """Verifies that the Markdown compiler generates valid markdown structure and contains expected markers."""
     reports = MarkdownReportCompiler.compile_all(mock_analytics_results, mock_statistics_results)
-    
+
     assert "executive_summary" in reports
     assert "technical_summary" in reports
     assert "business_report" in reports
-    
+
     exec_summary = reports["executive_summary"]
     assert "# PrimeTrade AI - Executive Summary Report" in exec_summary
     assert "## Key Performance Indicators" in exec_summary
     assert "BTCUSDT" in exec_summary
     assert "Increase leverage safety margin" in exec_summary
-    
+
     tech_summary = reports["technical_summary"]
     assert "# PrimeTrade AI - Technical & Statistical Report" in tech_summary
     assert "Pearson" in tech_summary
     assert "Independent T-Test" in tech_summary
-    
+
     biz_report = reports["business_report"]
     assert "# PrimeTrade AI - Portfolio & Business Performance Report" in biz_report
     assert "TRD_001" in biz_report
@@ -158,21 +159,21 @@ def test_markdown_report_compiler(mock_analytics_results, mock_statistics_result
 def test_html_report_compiler(mock_analytics_results, mock_statistics_results):
     """Verifies that the HTML compiler generates full valid CSS-styled HTML page strings."""
     reports = HTMLReportCompiler.compile_all(mock_analytics_results, mock_statistics_results)
-    
+
     assert "executive_summary" in reports
     assert "technical_summary" in reports
     assert "business_report" in reports
-    
+
     exec_summary = reports["executive_summary"]
     assert "<!DOCTYPE html>" in exec_summary
     assert "<style>" in exec_summary
     assert "Executive Trading Summary" in exec_summary
     assert "cumulative_pnl.png" in exec_summary
-    
+
     tech_summary = reports["technical_summary"]
     assert "Technical & Statistical Report" in tech_summary
     assert "Pearson" in tech_summary
-    
+
     biz_report = reports["business_report"]
     assert "Portfolio & Business Performance" in biz_report
 
@@ -180,11 +181,11 @@ def test_html_report_compiler(mock_analytics_results, mock_statistics_results):
 def test_pdf_report_compiler(mock_analytics_results, mock_statistics_results):
     """Verifies that the PDF compiler successfully instantiates and builds PrimeTradePDF objects."""
     reports = PDFReportCompiler.compile_all(mock_analytics_results, mock_statistics_results)
-    
+
     assert "executive_summary" in reports
     assert "technical_summary" in reports
     assert "business_report" in reports
-    
+
     for name, pdf in reports.items():
         assert isinstance(pdf, PrimeTradePDF)
         assert pdf.report_title is not None
@@ -197,24 +198,24 @@ def test_reporting_engine_workflow(mock_analytics_results, mock_statistics_resul
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
         engine = ReportingEngine(output_dir=tmp_path)
-        
+
         results = engine.run_reporting(mock_analytics_results, mock_statistics_results)
-        
+
         # Check dictionary structure
         assert "executive_summary" in results
         assert "technical_summary" in results
         assert "business_report" in results
-        
+
         for name in ["executive_summary", "technical_summary", "business_report"]:
             assert "md" in results[name]
             assert "html" in results[name]
             assert "pdf" in results[name]
-            
+
             # Check files exist on disk
             assert results[name]["md"].exists()
             assert results[name]["html"].exists()
             assert results[name]["pdf"].exists()
-            
+
             # File size checks
             assert results[name]["md"].stat().st_size > 0
             assert results[name]["html"].stat().st_size > 0

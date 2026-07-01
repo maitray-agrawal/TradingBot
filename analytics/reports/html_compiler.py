@@ -294,9 +294,7 @@ class HTMLReportCompiler:
             return str(val)
 
     @classmethod
-    def _get_html_wrapper(
-        cls, title: str, subtitle: str, report_type: str, body_content: str
-    ) -> str:
+    def _get_html_wrapper(cls, title: str, subtitle: str, report_type: str, body_content: str) -> str:
         """Helper to wrap body contents with full HTML boilerplate and styling."""
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
         return f"""<!DOCTYPE html>
@@ -335,9 +333,7 @@ class HTMLReportCompiler:
 """
 
     @classmethod
-    def compile_executive_summary(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> str:
+    def compile_executive_summary(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> str:
         """Compiles the HTML Executive Summary."""
         perf = analytics_res.get("performance_analysis", {})
         risk = analytics_res.get("risk_analysis", {})
@@ -382,8 +378,7 @@ class HTMLReportCompiler:
                 mean_val = details.get("mean", 0)
                 win_rate = details.get("win_rate", 0)
                 row_class = "text-profit" if pnl >= 0 else "text-loss"
-                regime_rows.append(
-                    f"""
+                regime_rows.append(f"""
                     <tr>
                         <td><strong>{regime}</strong></td>
                         <td>{count}</td>
@@ -391,8 +386,7 @@ class HTMLReportCompiler:
                         <td>{cls._format_pct(win_rate)}</td>
                         <td>{cls._format_currency(mean_val)}</td>
                     </tr>
-                    """
-                )
+                    """)
         regime_table = "".join(regime_rows)
 
         # Assets
@@ -410,13 +404,11 @@ class HTMLReportCompiler:
         # Warnings list
         warns = []
         for warn in intel.get("warnings", []):
-            warns.append(
-                f"""
+            warns.append(f"""
                 <div class="alert alert-warning">
                     <strong>SYSTEM WARNING:</strong> {warn}
                 </div>
-                """
-            )
+                """)
         warns_html = "".join(warns)
 
         body = f"""
@@ -509,9 +501,7 @@ class HTMLReportCompiler:
         )
 
     @classmethod
-    def compile_technical_summary(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> str:
+    def compile_technical_summary(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> str:
         """Compiles the HTML Technical Summary."""
         descriptive = statistics_res.get("descriptive", {})
         corr = statistics_res.get("correlations", {})
@@ -535,8 +525,7 @@ class HTMLReportCompiler:
                 s_pval = value["spearman"].get("p_value")
                 sig = "YES" if value["pearson"].get("significant") or value["spearman"].get("significant") else "NO"
                 var_name = key.replace("_", " ").title()
-                corr_rows.append(
-                    f"""
+                corr_rows.append(f"""
                     <tr>
                         <td><strong>{var_name}</strong></td>
                         <td>{cls._format_float(p_coef)}</td>
@@ -545,8 +534,7 @@ class HTMLReportCompiler:
                         <td>{cls._format_float(s_pval)}</td>
                         <td style="font-weight:600; color: {'var(--accent-green)' if sig == 'YES' else 'var(--text-muted)'}">{sig}</td>
                     </tr>
-                    """
-                )
+                    """)
         corr_table = "".join(corr_rows)
 
         # Hypothesis Tests rows
@@ -561,8 +549,7 @@ class HTMLReportCompiler:
             t = hypo.get(key, {})
             if t:
                 sig = "YES" if t.get("significant") else "NO"
-                hypo_rows.append(
-                    f"""
+                hypo_rows.append(f"""
                     <tr>
                         <td><strong>{name}</strong></td>
                         <td>{cls._format_float(t.get('stat'))}</td>
@@ -570,8 +557,7 @@ class HTMLReportCompiler:
                         <td style="font-weight:600; color: {'var(--accent-green)' if sig == 'YES' else 'var(--text-muted)'}">{sig}</td>
                         <td>{desc}</td>
                     </tr>
-                    """
-                )
+                    """)
         hypo_table = "".join(hypo_rows)
 
         # Normality rows
@@ -585,8 +571,7 @@ class HTMLReportCompiler:
                 s_norm = "YES" if shapiro.get("normal") else "NO"
                 k_p = ks.get("p_value")
                 k_norm = "YES" if ks.get("normal") else "NO"
-                norm_rows.append(
-                    f"""
+                norm_rows.append(f"""
                     <tr>
                         <td><code>{col}</code></td>
                         <td>{cls._format_float(s_stat)}</td>
@@ -595,8 +580,7 @@ class HTMLReportCompiler:
                         <td>{cls._format_float(k_p)}</td>
                         <td>{k_norm}</td>
                     </tr>
-                    """
-                )
+                    """)
         norm_table = "".join(norm_rows)
 
         # CI rows
@@ -609,8 +593,7 @@ class HTMLReportCompiler:
                 up = details.get("upper_bound")
                 ci_type = details.get("type", "Student-t")
                 if "win_rate" in param:
-                    ci_rows.append(
-                        f"""
+                    ci_rows.append(f"""
                         <tr>
                             <td><strong>{name}</strong></td>
                             <td>{cls._format_pct(est)}</td>
@@ -618,11 +601,9 @@ class HTMLReportCompiler:
                             <td>{cls._format_pct(up)}</td>
                             <td>Wilson Score</td>
                         </tr>
-                        """
-                    )
+                        """)
                 else:
-                    ci_rows.append(
-                        f"""
+                    ci_rows.append(f"""
                         <tr>
                             <td><strong>{name}</strong></td>
                             <td>{cls._format_currency(est)}</td>
@@ -630,8 +611,7 @@ class HTMLReportCompiler:
                             <td>{cls._format_currency(up)}</td>
                             <td>{ci_type}</td>
                         </tr>
-                        """
-                    )
+                        """)
         ci_table = "".join(ci_rows)
 
         # Observations
@@ -788,9 +768,7 @@ class HTMLReportCompiler:
         )
 
     @classmethod
-    def compile_business_report(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> str:
+    def compile_business_report(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> str:
         """Compiles the HTML Business Report."""
         perf = analytics_res.get("performance_analysis", {})
         risk = analytics_res.get("risk_analysis", {})
@@ -811,13 +789,10 @@ class HTMLReportCompiler:
         coin_rows = []
         coin_pnls = coin.get("coin_pnls", {})
         if coin_pnls:
-            sorted_coins = sorted(
-                coin_pnls.items(), key=lambda item: item[1].get("sum", 0), reverse=True
-            )
+            sorted_coins = sorted(coin_pnls.items(), key=lambda item: item[1].get("sum", 0), reverse=True)
             for symbol, details in sorted_coins:
                 row_class = "text-profit" if details.get("sum", 0) >= 0 else "text-loss"
-                coin_rows.append(
-                    f"""
+                coin_rows.append(f"""
                     <tr>
                         <td><strong>{symbol}</strong></td>
                         <td class="{row_class}">{cls._format_currency(details.get('sum', 0))}</td>
@@ -825,8 +800,7 @@ class HTMLReportCompiler:
                         <td>{cls._format_pct(details.get('win_rate', 0))}</td>
                         <td>{cls._format_float(details.get('volume', 0), 2)}</td>
                     </tr>
-                    """
-                )
+                    """)
         coin_table = "".join(coin_rows)
 
         # Trader Leaderboard Table
@@ -834,8 +808,7 @@ class HTMLReportCompiler:
         top_traders = traders.get("top_10_traders", [])
         if top_traders:
             for idx, t in enumerate(top_traders, 1):
-                trader_rows.append(
-                    f"""
+                trader_rows.append(f"""
                     <tr>
                         <td>Rank #{idx} <code>{t.get('trader_id')}</code></td>
                         <td class="text-profit">{cls._format_currency(t.get('net_profit'))}</td>
@@ -843,8 +816,7 @@ class HTMLReportCompiler:
                         <td>{cls._format_float(t.get('profit_factor'), 2)}</td>
                         <td>{t.get('total_trades')}</td>
                     </tr>
-                    """
-                )
+                    """)
         trader_table = "".join(trader_rows)
 
         # Strategic recommendations
@@ -973,18 +945,10 @@ class HTMLReportCompiler:
         )
 
     @classmethod
-    def compile_all(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> Dict[str, str]:
+    def compile_all(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> Dict[str, str]:
         """Compiles all three HTML reports and returns them in a dictionary."""
         return {
-            "executive_summary": cls.compile_executive_summary(
-                analytics_res, statistics_res
-            ),
-            "technical_summary": cls.compile_technical_summary(
-                analytics_res, statistics_res
-            ),
-            "business_report": cls.compile_business_report(
-                analytics_res, statistics_res
-            ),
+            "executive_summary": cls.compile_executive_summary(analytics_res, statistics_res),
+            "technical_summary": cls.compile_technical_summary(analytics_res, statistics_res),
+            "business_report": cls.compile_business_report(analytics_res, statistics_res),
         }

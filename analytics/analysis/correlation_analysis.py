@@ -80,11 +80,7 @@ class CorrelationAnalysis:
         if "fg_value" in df_copy.columns and not df_copy["fg_value"].isna().all():
             target_cols.append("fg_value")
 
-        fee_col = (
-            "fees"
-            if "fees" in df_copy.columns
-            else ("fee" if "fee" in df_copy.columns else None)
-        )
+        fee_col = "fees" if "fees" in df_copy.columns else ("fee" if "fee" in df_copy.columns else None)
         if fee_col and not df_copy[fee_col].isna().all():
             target_cols.append(fee_col)
 
@@ -103,12 +99,8 @@ class CorrelationAnalysis:
         sentiment_vs_pnl_pearson = 0.0
         sentiment_vs_pnl_spearman = 0.0
         if "fg_value" in corr_df.columns:
-            sentiment_vs_pnl_pearson = float(
-                corr_df["fg_value"].corr(corr_df["closed_pnl"])
-            )
-            sentiment_vs_pnl_spearman = float(
-                corr_df["fg_value"].corr(corr_df["closed_pnl"], method="spearman")
-            )
+            sentiment_vs_pnl_pearson = float(corr_df["fg_value"].corr(corr_df["closed_pnl"]))
+            sentiment_vs_pnl_spearman = float(corr_df["fg_value"].corr(corr_df["closed_pnl"], method="spearman"))
 
         # 2. Size vs PnL
         size_vs_pnl_pearson = 0.0
@@ -123,32 +115,16 @@ class CorrelationAnalysis:
         # 4. Trade Frequency vs PnL (correlated daily trade count and daily closed PnL)
         trade_frequency_vs_pnl_pearson = 0.0
         df_copy["temp_date"] = df_copy["timestamp"].dt.date
-        daily_stats = df_copy.groupby("temp_date").agg(
-            trade_count=("closed_pnl", "count"), total_pnl=("closed_pnl", "sum")
-        )
+        daily_stats = df_copy.groupby("temp_date").agg(trade_count=("closed_pnl", "count"), total_pnl=("closed_pnl", "sum"))
         if len(daily_stats) > 1:
-            trade_frequency_vs_pnl_pearson = float(
-                daily_stats["trade_count"].corr(daily_stats["total_pnl"])
-            )
+            trade_frequency_vs_pnl_pearson = float(daily_stats["trade_count"].corr(daily_stats["total_pnl"]))
 
         # Clean up any nan values in scalars
-        sentiment_vs_pnl_pearson = (
-            0.0 if np.isnan(sentiment_vs_pnl_pearson) else sentiment_vs_pnl_pearson
-        )
-        sentiment_vs_pnl_spearman = (
-            0.0 if np.isnan(sentiment_vs_pnl_spearman) else sentiment_vs_pnl_spearman
-        )
-        size_vs_pnl_pearson = (
-            0.0 if np.isnan(size_vs_pnl_pearson) else size_vs_pnl_pearson
-        )
-        fees_vs_pnl_pearson = (
-            0.0 if np.isnan(fees_vs_pnl_pearson) else fees_vs_pnl_pearson
-        )
-        trade_frequency_vs_pnl_pearson = (
-            0.0
-            if np.isnan(trade_frequency_vs_pnl_pearson)
-            else trade_frequency_vs_pnl_pearson
-        )
+        sentiment_vs_pnl_pearson = 0.0 if np.isnan(sentiment_vs_pnl_pearson) else sentiment_vs_pnl_pearson
+        sentiment_vs_pnl_spearman = 0.0 if np.isnan(sentiment_vs_pnl_spearman) else sentiment_vs_pnl_spearman
+        size_vs_pnl_pearson = 0.0 if np.isnan(size_vs_pnl_pearson) else size_vs_pnl_pearson
+        fees_vs_pnl_pearson = 0.0 if np.isnan(fees_vs_pnl_pearson) else fees_vs_pnl_pearson
+        trade_frequency_vs_pnl_pearson = 0.0 if np.isnan(trade_frequency_vs_pnl_pearson) else trade_frequency_vs_pnl_pearson
 
         analytics_logger.info("Correlation analysis completed successfully.")
         return CorrelationAnalysisResult(

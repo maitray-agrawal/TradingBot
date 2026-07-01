@@ -9,8 +9,7 @@ import pandas as pd
 import pytest
 
 from analytics.strategy.base_strategy import BaseStrategy
-from analytics.strategy.rule_based import (RuleBasedStrategy, StrategyConfig,
-                                           StrategyRecommendation)
+from analytics.strategy.rule_based import RuleBasedStrategy, StrategyConfig, StrategyRecommendation
 from analytics.strategy.strategy_engine import StrategyEngine
 from config.enums import StrategyAction
 
@@ -19,9 +18,7 @@ from config.enums import StrategyAction
 class DummyStrategy(BaseStrategy):
     """Dummy strategy implementation to test BaseStrategy helper methods."""
 
-    def generate_recommendation(
-        self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None
-    ) -> dict:
+    def generate_recommendation(self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None) -> dict:
         return {}
 
 
@@ -36,17 +33,39 @@ def mock_trades_df():
     """Generates a standard mock trade history dataframe."""
     base_time = datetime(2026, 6, 20, 12, 0, 0)
     timestamps = [base_time + timedelta(hours=i) for i in range(20)]
-    closed_pnls = [100.0, -50.0, 200.0, -100.0, 150.0, -50.0, 50.0, -20.0, 120.0, 80.0,
-                   -30.0, 110.0, 90.0, -60.0, -40.0, 200.0, 150.0, -50.0, 120.0, 100.0]
+    closed_pnls = [
+        100.0,
+        -50.0,
+        200.0,
+        -100.0,
+        150.0,
+        -50.0,
+        50.0,
+        -20.0,
+        120.0,
+        80.0,
+        -30.0,
+        110.0,
+        90.0,
+        -60.0,
+        -40.0,
+        200.0,
+        150.0,
+        -50.0,
+        120.0,
+        100.0,
+    ]
 
-    df = pd.DataFrame({
-        "timestamp": timestamps,
-        "closed_pnl": closed_pnls,
-        "size": [0.1] * 20,
-        "execution_price": [30000.0 + i * 100 for i in range(20)],
-        "is_profit": [1 if p > 0 else 0 for p in closed_pnls],
-        "value": [50.0] * 20,  # Neutral sentiment F&G
-    })
+    df = pd.DataFrame(
+        {
+            "timestamp": timestamps,
+            "closed_pnl": closed_pnls,
+            "size": [0.1] * 20,
+            "execution_price": [30000.0 + i * 100 for i in range(20)],
+            "is_profit": [1 if p > 0 else 0 for p in closed_pnls],
+            "value": [50.0] * 20,  # Neutral sentiment F&G
+        }
+    )
     df["cumulative_pnl"] = df["closed_pnl"].cumsum()
     return df
 
@@ -199,11 +218,7 @@ def test_strategy_engine_runs_and_exports(tmp_path, mock_trades_df):
         engine = StrategyEngine(strategies=[RuleBasedStrategy(config=config)])
 
         # Run strategy analysis
-        recommendations = engine.run_strategy_analysis(
-            df=mock_trades_df,
-            current_sentiment_val=40.0,
-            export_outputs=True
-        )
+        recommendations = engine.run_strategy_analysis(df=mock_trades_df, current_sentiment_val=40.0, export_outputs=True)
 
         assert "Rule-Based Sentiment & Risk Strategy" in recommendations
 
@@ -218,6 +233,7 @@ def test_strategy_engine_runs_and_exports(tmp_path, mock_trades_df):
 
         # Check JSON content
         import json
+
         with open(json_file, "r") as f:
             data = json.load(f)
             assert "Rule-Based Sentiment & Risk Strategy" in data

@@ -3,21 +3,23 @@
 import json
 import math
 from pathlib import Path
+
 import pytest
 from binance.exceptions import BinanceAPIException
 
 from config.enums import OrderType, TradingSide
 from trading_bot.client.client import BinanceTestnetClient, retry_on_failure
-from trading_bot.orders.orders import FuturesOrder
 from trading_bot.order_manager import OrderManager
+from trading_bot.orders.orders import FuturesOrder
 from trading_bot.risk_manager import RiskConfig, RiskManager
 from trading_bot.validators.validators import OrderValidator
-from utils.exceptions import APIError, NetworkError, ValidationError as BotValidationError
-
+from utils.exceptions import APIError, NetworkError
+from utils.exceptions import ValidationError as BotValidationError
 
 # ==============================================================================
 # 1. Schema Validation Tests
 # ==============================================================================
+
 
 def test_futures_order_market_validation() -> None:
     """Verifies that MARKET orders don't require price inputs."""
@@ -107,6 +109,7 @@ def test_futures_order_invalid_inputs() -> None:
 # 2. OrderValidator Tests
 # ==============================================================================
 
+
 def test_validator_leverage_bounds() -> None:
     """Verifies leverage boundaries limits."""
     validator = OrderValidator()
@@ -134,7 +137,7 @@ def test_validator_rounding_and_filters() -> None:
         client=client,
         symbol="BTCUSDT",
         quantity=0.12345,  # Should round to 0.123
-        price=60500.567,   # Should round to 60500.50 or 60500.60 depending on tickSize 0.10
+        price=60500.567,  # Should round to 60500.50 or 60500.60 depending on tickSize 0.10
     )
     assert res["quantity"] == 0.123
     assert res["price"] == 60500.60
@@ -198,6 +201,7 @@ def test_validator_margin_requirements() -> None:
 # 3. RiskManager Tests
 # ==============================================================================
 
+
 def test_risk_manager_leverage_limit() -> None:
     """Verifies RiskManager blocks leverage configurations above limits."""
     client = BinanceTestnetClient(dry_run=True)
@@ -205,9 +209,7 @@ def test_risk_manager_leverage_limit() -> None:
     risk_m = RiskManager(config=config)
 
     # Use a small quantity (0.01 BTC instead of 0.05 BTC) to avoid violating the 10% position size ratio
-    order = FuturesOrder(
-        symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.MARKET, quantity=0.01
-    )
+    order = FuturesOrder(symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.MARKET, quantity=0.01)
 
     # Under limit
     risk_m.check_order_risk(client, order, leverage=10)
@@ -228,15 +230,11 @@ def test_risk_manager_position_size_limit() -> None:
     risk_m._get_historical_peak = lambda balance: balance
 
     # 1. Long 0.001 BTC at 60,000 USDT = 60 USDT value (ok)
-    order_ok = FuturesOrder(
-        symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.LIMIT, quantity=0.001, price=60000.0
-    )
+    order_ok = FuturesOrder(symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.LIMIT, quantity=0.001, price=60000.0)
     risk_m.check_order_risk(client, order_ok, leverage=10)
 
     # 2. Long 0.003 BTC at 60,000 USDT = 180 USDT value (violates 10% ratio)
-    order_bad = FuturesOrder(
-        symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.LIMIT, quantity=0.003, price=60000.0
-    )
+    order_bad = FuturesOrder(symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.LIMIT, quantity=0.003, price=60000.0)
     with pytest.raises(BotValidationError, match="exceeds the maximum single position ratio"):
         risk_m.check_order_risk(client, order_bad, leverage=10)
 
@@ -256,9 +254,7 @@ def test_risk_manager_drawdown_limit() -> None:
 
     risk_m._get_historical_peak = mock_peak
 
-    order = FuturesOrder(
-        symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.LIMIT, quantity=0.001, price=60000.0
-    )
+    order = FuturesOrder(symbol="BTCUSDT", side=TradingSide.BUY, type=OrderType.LIMIT, quantity=0.001, price=60000.0)
     with pytest.raises(BotValidationError, match="Account drawdown.*exceeds the risk limit"):
         risk_m.check_order_risk(client, order, leverage=10)
 
@@ -266,6 +262,7 @@ def test_risk_manager_drawdown_limit() -> None:
 # ==============================================================================
 # 4. Client Retry Logic Tests
 # ==============================================================================
+
 
 class DummyClient:
     """Helper to test retry_on_failure decorator."""
@@ -318,6 +315,7 @@ def test_retry_decorator_immediate_fail() -> None:
 # 5. Dry Run Integration Tests
 # ==============================================================================
 
+
 def test_dry_run_placement_updates_positions(tmp_path: Path) -> None:
     """Verifies dry run mode places orders, updates positions, and writes log history files."""
     client = BinanceTestnetClient(dry_run=True)
@@ -333,7 +331,7 @@ def test_dry_run_placement_updates_positions(tmp_path: Path) -> None:
     risk_m = RiskManager()
     # Redirect paths
     risk_m.history_path = json_path
-    
+
     manager = OrderManager(client, validator, risk_m)
     manager.json_history = json_path
     manager.csv_history = csv_path
@@ -363,7 +361,7 @@ def test_dry_run_placement_updates_positions(tmp_path: Path) -> None:
     # Load and check history content
     with open(json_path, "r", encoding="utf-8") as f:
         history = json.load(f)
-    
+
     assert len(history) == 1
     assert history[0]["symbol"] == "BTCUSDT"
     assert history[0]["side"] == "BUY"

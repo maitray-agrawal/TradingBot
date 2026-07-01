@@ -52,9 +52,7 @@ class StrategyEngine:
         if df is None:
             processed_file = PROCESSED_DATA_DIR / "processed_data.csv"
             if not processed_file.exists():
-                analytics_logger.error(
-                    f"Processed data file not found at {processed_file}. Cannot run strategy analysis."
-                )
+                analytics_logger.error(f"Processed data file not found at {processed_file}. Cannot run strategy analysis.")
                 raise FileNotFoundError(
                     f"Missing processed dataset: {processed_file}. Please run the preprocessing or analytics engine first."
                 )
@@ -69,14 +67,10 @@ class StrategyEngine:
         for strategy in self.strategies:
             try:
                 analytics_logger.info(f"Executing strategy: {strategy.name}...")
-                rec_result = strategy.generate_recommendation(
-                    df, current_sentiment_val=current_sentiment_val
-                )
+                rec_result = strategy.generate_recommendation(df, current_sentiment_val=current_sentiment_val)
                 recommendations[strategy.name] = rec_result
             except Exception as e:
-                analytics_logger.exception(
-                    f"Error executing strategy {strategy.name}: {str(e)}"
-                )
+                analytics_logger.exception(f"Error executing strategy {strategy.name}: {str(e)}")
 
         # 3. Export outputs if requested
         if export_outputs and recommendations:

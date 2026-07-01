@@ -36,9 +36,7 @@ class FileScanner:
             search_dirs: Optional list of directory paths to scan.
         """
         self.detector = detector if detector is not None else DatasetDetector()
-        self.search_dirs = (
-            search_dirs if search_dirs is not None else [RAW_DATA_DIR, UPLOADS_DATA_DIR]
-        )
+        self.search_dirs = search_dirs if search_dirs is not None else [RAW_DATA_DIR, UPLOADS_DATA_DIR]
 
     def scan_directories(self) -> Dict[str, DatasetType]:
         """Scans all configured search directories for supported files.
@@ -68,9 +66,7 @@ class FileScanner:
                                 f"Discovered file: {file_path.name} -> Classified as {dtype.name} (score: {score:.2%})"
                             )
                         except Exception as e:
-                            logger.error(
-                                f"Failed to peek columns of file {file_path.name}: {e}"
-                            )
+                            logger.error(f"Failed to peek columns of file {file_path.name}: {e}")
                             discovered[str(file_path.resolve())] = DatasetType.UNKNOWN
 
         return discovered

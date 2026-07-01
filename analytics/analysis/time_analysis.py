@@ -80,9 +80,7 @@ class TimeAnalysis:
         df_copy["week"] = df_copy["timestamp"].dt.isocalendar().week.astype(int)
         df_copy["month"] = df_copy["timestamp"].dt.month
         df_copy["quarter"] = df_copy["timestamp"].dt.quarter
-        df_copy["is_weekend"] = (
-            df_copy["weekday"].isin([5, 6]).map({True: "Weekend", False: "Weekday"})
-        )
+        df_copy["is_weekend"] = df_copy["weekday"].isin([5, 6]).map({True: "Weekend", False: "Weekday"})
         df_copy["session"] = df_copy["hour"].apply(cls._get_session)
 
         # Helper function to compute metrics for a group

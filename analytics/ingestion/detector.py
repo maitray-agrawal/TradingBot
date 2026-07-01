@@ -39,9 +39,7 @@ class DatasetDetector:
 
     def __init__(self, data_dir: Optional[Path] = None):
         self.data_dir = data_dir or settings.DATA_DIR
-        analytics_logger.info(
-            f"DatasetDetector initialized targeting directory: {self.data_dir}"
-        )
+        analytics_logger.info(f"DatasetDetector initialized targeting directory: {self.data_dir}")
 
     @staticmethod
     def normalize_header(header: str) -> str:
@@ -98,16 +96,8 @@ class DatasetDetector:
         fg_matches = normalized_headers.intersection(self.FEAR_GREED_TARGETS)
         trader_matches = normalized_headers.intersection(self.TRADER_DATA_TARGETS)
 
-        fg_score = (
-            len(fg_matches) / len(self.FEAR_GREED_TARGETS)
-            if self.FEAR_GREED_TARGETS
-            else 0.0
-        )
-        trader_score = (
-            len(trader_matches) / len(self.TRADER_DATA_TARGETS)
-            if self.TRADER_DATA_TARGETS
-            else 0.0
-        )
+        fg_score = len(fg_matches) / len(self.FEAR_GREED_TARGETS) if self.FEAR_GREED_TARGETS else 0.0
+        trader_score = len(trader_matches) / len(self.TRADER_DATA_TARGETS) if self.TRADER_DATA_TARGETS else 0.0
 
         analytics_logger.debug(
             f"File: {file_path.name} | FG overlap: {len(fg_matches)} (Score: {fg_score:.2f}) | "
@@ -149,25 +139,19 @@ class DatasetDetector:
         )
         return results
 
-    def select_dataset_cli(
-        self, dataset_type: DatasetType, candidates: List[Dict[str, Any]]
-    ) -> Optional[Path]:
+    def select_dataset_cli(self, dataset_type: DatasetType, candidates: List[Dict[str, Any]]) -> Optional[Path]:
         """
         Prompts user via CLI menu to select from multiple candidates for a dataset type.
         """
         if not candidates:
             return None
         if len(candidates) == 1:
-            analytics_logger.info(
-                f"Auto-selected single candidate for {dataset_type.value}: {candidates[0]['name']}"
-            )
+            analytics_logger.info(f"Auto-selected single candidate for {dataset_type.value}: {candidates[0]['name']}")
             return candidates[0]["path"]
 
         print(f"\nMultiple candidates found for {dataset_type.value.upper()}:")
         for i, cand in enumerate(candidates):
-            print(
-                f"  [{i+1}] {cand['name']} (Format: {cand['format']}, Score: {cand['score']:.2f})"
-            )
+            print(f"  [{i+1}] {cand['name']} (Format: {cand['format']}, Score: {cand['score']:.2f})")
 
         while True:
             try:
@@ -175,9 +159,7 @@ class DatasetDetector:
                 idx = int(choice) - 1
                 if 0 <= idx < len(candidates):
                     selected = candidates[idx]["path"]
-                    analytics_logger.info(
-                        f"User selected {dataset_type.value}: {selected.name}"
-                    )
+                    analytics_logger.info(f"User selected {dataset_type.value}: {selected.name}")
                     return selected
                 else:
                     print("Invalid option. Please try again.")

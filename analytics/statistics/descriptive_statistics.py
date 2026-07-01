@@ -16,9 +16,7 @@ class DescriptiveStatistics:
     """Calculates descriptive statistical metrics for numeric dataset columns."""
 
     @staticmethod
-    def calculate(
-        df: pd.DataFrame, columns: Optional[List[str]] = None
-    ) -> Dict[str, Dict[str, Any]]:
+    def calculate(df: pd.DataFrame, columns: Optional[List[str]] = None) -> Dict[str, Dict[str, Any]]:
         """Calculates descriptive statistics for target numeric columns in the dataframe.
 
         Args:
@@ -94,7 +92,5 @@ class DescriptiveStatistics:
                 "count": len(series),
             }
 
-        analytics_logger.info(
-            f"Descriptive statistics calculated for {list(results.keys())}."
-        )
+        analytics_logger.info(f"Descriptive statistics calculated for {list(results.keys())}.")
         return results

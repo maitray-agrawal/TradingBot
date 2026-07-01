@@ -83,16 +83,12 @@ class DistributionTester:
         # 1. Closed PnL Distribution Checks
         if "closed_pnl" in df.columns:
             pnl_data = df["closed_pnl"].dropna()
-            results["pnl_normality"] = DistributionTester._test_normality(
-                pnl_data, "closed_pnl"
-            )
+            results["pnl_normality"] = DistributionTester._test_normality(pnl_data, "closed_pnl")
 
         # 2. Fear & Greed Index Distribution Checks
         if "fg_value" in df.columns:
             fg_data = df["fg_value"].dropna()
-            results["fg_normality"] = DistributionTester._test_normality(
-                fg_data, "fg_value"
-            )
+            results["fg_normality"] = DistributionTester._test_normality(fg_data, "fg_value")
 
         # 3. Two-sample KS test comparing Fear vs Greed returns
         sentiment_col = (
@@ -113,12 +109,8 @@ class DistributionTester:
             fear_regimes = ["Fear", "Extreme Fear"]
             greed_regimes = ["Greed", "Extreme Greed"]
 
-            fear_pnl = df_temp[df_temp[sentiment_col].isin(fear_regimes)][
-                "closed_pnl"
-            ].dropna()
-            greed_pnl = df_temp[df_temp[sentiment_col].isin(greed_regimes)][
-                "closed_pnl"
-            ].dropna()
+            fear_pnl = df_temp[df_temp[sentiment_col].isin(fear_regimes)]["closed_pnl"].dropna()
+            greed_pnl = df_temp[df_temp[sentiment_col].isin(greed_regimes)]["closed_pnl"].dropna()
 
             if len(fear_pnl) >= 2 and len(greed_pnl) >= 2:
                 try:
@@ -131,13 +123,9 @@ class DistributionTester:
                     }
                 except Exception as e:
                     analytics_logger.error(f"Error running 2-sample KS test: {e}")
-                    results["fear_vs_greed_ks_2samp"][
-                        "message"
-                    ] = f"Execution error: {e}"
+                    results["fear_vs_greed_ks_2samp"]["message"] = f"Execution error: {e}"
             else:
-                results["fear_vs_greed_ks_2samp"][
-                    "message"
-                ] = "Requires at least 2 samples per regime."
+                results["fear_vs_greed_ks_2samp"]["message"] = "Requires at least 2 samples per regime."
 
         analytics_logger.info("Distribution testing complete.")
         return results
@@ -203,9 +191,7 @@ class DistributionTester:
                 analytics_logger.error(f"D'Agostino-Pearson failed for {name}: {e}")
                 out["dagostino_k2"]["message"] = f"Error: {e}"
         else:
-            out["dagostino_k2"][
-                "message"
-            ] = f"D'Agostino requires n >= 8 (current: {n})."
+            out["dagostino_k2"]["message"] = f"D'Agostino requires n >= 8 (current: {n})."
 
         # 1-sample KS test against standard normal distribution scaled by sample parameters
         try:

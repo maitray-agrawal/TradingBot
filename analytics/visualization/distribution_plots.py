@@ -26,25 +26,19 @@ def plot_pnl_distribution_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
         Optional[plt.Figure]: Matplotlib Figure, or None if column missing.
     """
     if "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'closed_pnl' for PnL distribution static plot."
-        )
+        analytics_logger.warning("Missing 'closed_pnl' for PnL distribution static plot.")
         return None
 
     # Filter out trades with no realized PnL (breakeven/unclosed)
     pnl_data = df["closed_pnl"].dropna()
     if pnl_data.empty:
-        analytics_logger.warning(
-            "No closed PnL values available for distribution plot."
-        )
+        analytics_logger.warning("No closed PnL values available for distribution plot.")
         return None
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Render histogram and density curve
-    sns.histplot(
-        pnl_data, kde=True, color="#0052CC", ax=ax, bins=30, edgecolor="none", alpha=0.6
-    )
+    sns.histplot(pnl_data, kde=True, color="#0052CC", ax=ax, bins=30, edgecolor="none", alpha=0.6)
 
     # Reference line at y=0
     ax.axvline(0, color="#EF4444", linestyle="--", linewidth=1.2, label="Breakeven (0)")
@@ -69,16 +63,12 @@ def plot_pnl_distribution_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure, or None if column missing.
     """
     if "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'closed_pnl' for PnL distribution interactive plot."
-        )
+        analytics_logger.warning("Missing 'closed_pnl' for PnL distribution interactive plot.")
         return None
 
     pnl_data = df["closed_pnl"].dropna()
     if pnl_data.empty:
-        analytics_logger.warning(
-            "No closed PnL values available for distribution plot."
-        )
+        analytics_logger.warning("No closed PnL values available for distribution plot.")
         return None
 
     fig = px.histogram(
@@ -185,9 +175,7 @@ def plot_win_loss_pie_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure, or None if column missing.
     """
     if "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'closed_pnl' for win/loss pie interactive plot."
-        )
+        analytics_logger.warning("Missing 'closed_pnl' for win/loss pie interactive plot.")
         return None
 
     pnl = df["closed_pnl"].dropna()
@@ -267,9 +255,7 @@ def plot_sentiment_regime_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
         sentiment_col = "fg_classification"
 
     if not sentiment_col or "closed_pnl" not in data.columns:
-        analytics_logger.warning(
-            "Missing sentiment or closed PnL columns for regime plot."
-        )
+        analytics_logger.warning("Missing sentiment or closed PnL columns for regime plot.")
         return None
 
     # Exclude Unknown or NA values
@@ -349,9 +335,7 @@ def plot_sentiment_regime_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         sentiment_col = "fg_classification"
 
     if not sentiment_col or "closed_pnl" not in data.columns:
-        analytics_logger.warning(
-            "Missing sentiment or closed PnL columns for regime plot."
-        )
+        analytics_logger.warning("Missing sentiment or closed PnL columns for regime plot.")
         return None
 
     data = data[data[sentiment_col].notna() & (data[sentiment_col] != "Unknown")]
@@ -381,9 +365,7 @@ def plot_sentiment_regime_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
             font=dict(size=18, family="Outfit, Inter, sans-serif"),
             x=0.5,
         ),
-        xaxis=dict(
-            title="Sentiment Classification", gridcolor="rgba(200, 200, 200, 0.15)"
-        ),
+        xaxis=dict(title="Sentiment Classification", gridcolor="rgba(200, 200, 200, 0.15)"),
         yaxis=dict(title="Realized PnL (USDT)", gridcolor="rgba(200, 200, 200, 0.15)"),
         template="plotly_dark",
         paper_bgcolor="rgba(15, 23, 42, 1)",

@@ -100,14 +100,8 @@ class PerformanceAnalysis:
                 analytics_logger.warning(f"Error calculating average holding time: {e}")
 
         # Fee calculations
-        fee_col = (
-            "fees" if "fees" in df.columns else ("fee" if "fee" in df.columns else None)
-        )
-        average_fee = (
-            float(df[fee_col].mean())
-            if fee_col and not df[fee_col].isna().all()
-            else 0.0
-        )
+        fee_col = "fees" if "fees" in df.columns else ("fee" if "fee" in df.columns else None)
+        average_fee = float(df[fee_col].mean()) if fee_col and not df[fee_col].isna().all() else 0.0
 
         # Profits and Losses
         net_profit = float(pnl_series.sum())

@@ -17,9 +17,7 @@ MAX_LOG_SIZE_BYTES = 5 * 1024 * 1024
 BACKUP_COUNT = 3
 
 # Formatting string for standard files
-FILE_FORMAT = (
-    "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s"
-)
+FILE_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s"
 
 
 class ANSIColors:
@@ -117,9 +115,7 @@ def setup_logging(level_name: str = "INFO") -> None:
     # 4. Analytics Specific Log File Handler
     analytics_logger = logging.getLogger("analytics")
     analytics_logger.setLevel(log_level)
-    analytics_logger.propagate = (
-        True  # Propagate to root for system.log, errors.log, and console
-    )
+    analytics_logger.propagate = True  # Propagate to root for system.log, errors.log, and console
 
     analytics_log_path = SYSTEM_LOG_DIR / "analytics.log"
     analytics_handler = RotatingFileHandler(
@@ -135,9 +131,7 @@ def setup_logging(level_name: str = "INFO") -> None:
     # 5. Trading Bot Specific Log File Handler
     bot_logger = logging.getLogger("bot")
     bot_logger.setLevel(log_level)
-    bot_logger.propagate = (
-        True  # Propagate to root for system.log, errors.log, and console
-    )
+    bot_logger.propagate = True  # Propagate to root for system.log, errors.log, and console
 
     bot_log_path = BOT_LOG_DIR / "bot.log"
     bot_handler = RotatingFileHandler(
@@ -168,4 +162,3 @@ def get_logger(name: str) -> logging.Logger:
 # Convenient module-level logger instances for imports
 analytics_logger = logging.getLogger("analytics")
 bot_logger = logging.getLogger("bot")
-

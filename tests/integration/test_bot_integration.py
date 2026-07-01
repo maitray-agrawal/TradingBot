@@ -190,9 +190,7 @@ class TestRiskManagerIntegration:
 class TestPositionManagerIntegration:
     """Integration: PositionManager uses the correct API method."""
 
-    def test_position_manager_has_get_active_positions_method(
-        self, mock_binance_client: MagicMock
-    ) -> None:
+    def test_position_manager_has_get_active_positions_method(self, mock_binance_client: MagicMock) -> None:
         """PositionManager exposes get_active_positions() method."""
         from trading_bot.position_manager import PositionManager
 
@@ -200,9 +198,7 @@ class TestPositionManagerIntegration:
         assert hasattr(pm, "get_active_positions")
         assert callable(pm.get_active_positions)
 
-    def test_position_manager_dry_run_returns_list(
-        self, mock_binance_client: MagicMock
-    ) -> None:
+    def test_position_manager_dry_run_returns_list(self, mock_binance_client: MagicMock) -> None:
         """PositionManager.get_active_positions() returns a list in dry-run."""
         from trading_bot.position_manager import PositionManager
 
@@ -214,9 +210,7 @@ class TestPositionManagerIntegration:
         positions = pm.get_active_positions()
         assert isinstance(positions, list)
 
-    def test_position_manager_has_set_leverage_method(
-        self, mock_binance_client: MagicMock
-    ) -> None:
+    def test_position_manager_has_set_leverage_method(self, mock_binance_client: MagicMock) -> None:
         """PositionManager exposes set_leverage() method."""
         from trading_bot.position_manager import PositionManager
 

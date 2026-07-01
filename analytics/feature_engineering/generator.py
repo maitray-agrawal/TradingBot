@@ -44,9 +44,7 @@ class FeatureGenerator:
 
         # 2. Trade Direction & Value
         # BUY = 1, SELL = -1
-        df["trade_direction"] = (
-            df["side"].map({"BUY": 1, "SELL": -1}).fillna(0).astype(int)
-        )
+        df["trade_direction"] = df["side"].map({"BUY": 1, "SELL": -1}).fillna(0).astype(int)
 
         # trade_value = size * execution_price (notational value of trade in quote currency)
         df["trade_value"] = df["size"] * df["execution_price"]
@@ -58,20 +56,14 @@ class FeatureGenerator:
         df["is_profit"] = (df["closed_pnl"] > 0).astype(int)
 
         # profit_percentage = closed_pnl / trade_value (avoiding division by zero)
-        df["profit_percentage"] = np.where(
-            df["trade_value"] > 0, (df["closed_pnl"] / df["trade_value"]) * 100, 0.0
-        )
+        df["profit_percentage"] = np.where(df["trade_value"] > 0, (df["closed_pnl"] / df["trade_value"]) * 100, 0.0)
 
         # 4. Rolling and Cumulative Metrics (Computed chronologically)
         df["cumulative_pnl"] = df["closed_pnl"].cumsum()
 
         # Rolling pnl and volume
-        df["rolling_pnl"] = (
-            df["closed_pnl"].rolling(window=rolling_window, min_periods=1).sum()
-        )
-        df["rolling_volume"] = (
-            df["trade_value"].rolling(window=rolling_window, min_periods=1).sum()
-        )
+        df["rolling_pnl"] = df["closed_pnl"].rolling(window=rolling_window, min_periods=1).sum()
+        df["rolling_volume"] = df["trade_value"].rolling(window=rolling_window, min_periods=1).sum()
 
         # 5. Daily Realized PnL
         # realized PnL per calendar day (grouping by date)

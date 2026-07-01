@@ -25,6 +25,7 @@ def retry_on_failure(max_retries: int = 3, base_delay: float = 1.0, max_delay: f
     Retries only on connection errors or transient/rate-limiting errors (HTTP 429/418).
     Immediate failure is raised for parameter, logic, or balance errors.
     """
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -82,7 +83,9 @@ def retry_on_failure(max_retries: int = 3, base_delay: float = 1.0, max_delay: f
                     message=f"Network request failed after {max_retries} attempts: {str(last_ex)}",
                     details={"last_error": str(last_ex)},
                 )
+
         return wrapper
+
     return decorator
 
 
@@ -122,9 +125,7 @@ class BinanceTestnetClient:
                 )
             try:
                 # Setting testnet=True points python-binance client base endpoints to Testnet URLs
-                self.client = Client(
-                    api_key=self.api_key, api_secret=self.api_secret, testnet=True
-                )
+                self.client = Client(api_key=self.api_key, api_secret=self.api_secret, testnet=True)
                 logger.info("Live Testnet API connection established.")
             except Exception as e:
                 raise NetworkError(

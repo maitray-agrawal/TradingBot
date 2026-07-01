@@ -128,9 +128,7 @@ def plot_sentiment_vs_pnl_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
     # Reference line at y=0
     ax.axhline(0, color="gray", linewidth=0.8, linestyle="--")
 
-    ax.set_title(
-        "Fear & Greed Sentiment vs realized PnL", fontsize=14, fontweight="bold", pad=15
-    )
+    ax.set_title("Fear & Greed Sentiment vs realized PnL", fontsize=14, fontweight="bold", pad=15)
     ax.set_xlabel("Fear & Greed Index", fontsize=11, labelpad=10)
     ax.set_ylabel("Realized PnL (USDT)", fontsize=11, labelpad=10)
     ax.grid(True, linestyle="--", alpha=0.5)

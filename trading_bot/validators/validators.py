@@ -32,8 +32,7 @@ class OrderValidator:
         """
         if not (1 <= leverage <= 125):
             raise BotValidationError(
-                f"Leverage '{leverage}' is out of bounds for symbol '{symbol}'. "
-                "Must be an integer between 1 and 125."
+                f"Leverage '{leverage}' is out of bounds for symbol '{symbol}'. " "Must be an integer between 1 and 125."
             )
 
     def validate_notional_and_lot_size(
@@ -70,14 +69,10 @@ class OrderValidator:
                 break
 
         if not symbol_info:
-            raise BotValidationError(
-                f"Symbol '{symbol}' is not supported by the exchange or testnet."
-            )
+            raise BotValidationError(f"Symbol '{symbol}' is not supported by the exchange or testnet.")
 
         if symbol_info.get("status") != "TRADING":
-            raise BotValidationError(
-                f"Symbol '{symbol}' is currently offline (status: {symbol_info.get('status')})."
-            )
+            raise BotValidationError(f"Symbol '{symbol}' is currently offline (status: {symbol_info.get('status')}).")
 
         # Parse precision configuration
         qty_precision = int(symbol_info.get("quantityPrecision", 8))
@@ -162,9 +157,7 @@ class OrderValidator:
             "price": rounded_price if rounded_price is not None else 0.0,
         }
 
-    def validate_margin_requirements(
-        self, client: BinanceTestnetClient, order: FuturesOrder, leverage: int
-    ) -> None:
+    def validate_margin_requirements(self, client: BinanceTestnetClient, order: FuturesOrder, leverage: int) -> None:
         """Verifies if wallet available balance satisfies the order initial margin requirement.
 
         Initial Margin = (Quantity * Price) / Leverage
@@ -200,6 +193,5 @@ class OrderValidator:
             )
 
         logger.debug(
-            f"Margin check passed: Required: {required_margin:.2f} USDT, "
-            f"Available: {available_balance:.2f} USDT."
+            f"Margin check passed: Required: {required_margin:.2f} USDT, " f"Available: {available_balance:.2f} USDT."
         )

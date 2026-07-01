@@ -25,9 +25,7 @@ def validate_in_range(
         ValueError: If value falls outside boundaries.
     """
     if not (min_val <= value <= max_val):
-        raise ValueError(
-            f"{name} must be between {min_val} and {max_val} (inclusive). Got: {value}"
-        )
+        raise ValueError(f"{name} must be between {min_val} and {max_val} (inclusive). Got: {value}")
 
 
 def validate_is_positive(value: Union[int, float], name: str = "Value") -> None:

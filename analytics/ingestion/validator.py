@@ -70,17 +70,13 @@ class DatasetValidator:
         logs.append("Executing empty structure check.")
         if df.empty or len(df.columns) == 0:
             errors.append("Dataset is empty; contains zero rows or zero columns.")
-            return ValidationResult(
-                is_valid=False, errors=errors, warnings=warnings, check_logs=logs
-            )
+            return ValidationResult(is_valid=False, errors=errors, warnings=warnings, check_logs=logs)
 
         # 2. Duplicate Columns Check
         logs.append("Executing duplicate headers check.")
         import re
 
-        lower_cols = [
-            re.sub(r"\.\d+$", "", str(c).lower().strip()) for c in raw_columns
-        ]
+        lower_cols = [re.sub(r"\.\d+$", "", str(c).lower().strip()) for c in raw_columns]
         if len(lower_cols) != len(set(lower_cols)):
             dups = set([c for c in lower_cols if lower_cols.count(c) > 1])
             errors.append(f"Duplicate column headers detected: {dups}")
@@ -92,39 +88,29 @@ class DatasetValidator:
             warnings.append(f"Dataset contains {dup_rows} identical duplicate rows.")
 
         # 4. Missing Required Columns Check
-        logs.append(
-            f"Executing required columns check for dataset type {dataset_type.name}."
-        )
+        logs.append(f"Executing required columns check for dataset type {dataset_type.name}.")
         if dataset_type == DatasetType.TRADER_HISTORY:
             # Critical columns needed for downstream logic
             required = ["symbol", "side", "size", "execution_price", "timestamp"]
             missing = [r for r in required if r not in df.columns]
             if missing:
-                errors.append(
-                    f"Trader History dataset is missing required columns: {missing}"
-                )
+                errors.append(f"Trader History dataset is missing required columns: {missing}")
 
         elif dataset_type == DatasetType.FEAR_GREED:
             # Critical columns for daily index
             required = ["classification", "value", "timestamp"]
             missing = [r for r in required if r not in df.columns]
             if missing:
-                errors.append(
-                    f"Fear & Greed dataset is missing required columns: {missing}"
-                )
+                errors.append(f"Fear & Greed dataset is missing required columns: {missing}")
 
         # 5. Invalid Timestamps Check
         logs.append("Executing timestamp column check.")
         if "timestamp" in df.columns:
             null_timestamps = df["timestamp"].isna().sum()
             if null_timestamps == len(df):
-                errors.append(
-                    "Timestamp column is entirely null or contains unparseable dates."
-                )
+                errors.append("Timestamp column is entirely null or contains unparseable dates.")
             elif null_timestamps > 0:
-                warnings.append(
-                    f"Timestamp column has {null_timestamps} missing/unparseable values."
-                )
+                warnings.append(f"Timestamp column has {null_timestamps} missing/unparseable values.")
 
         # 6. Unsupported Datatypes Check
         logs.append("Executing column datatypes safety check.")
@@ -132,15 +118,9 @@ class DatasetValidator:
             col_type = df[col].dtype
             if str(col_type) in ("object", "string"):
                 # Non-text object types (like lists, dicts, tuples) are unsupported
-                sample = (
-                    df[col].dropna().iloc[0] if not df[col].dropna().empty else None
-                )
+                sample = df[col].dropna().iloc[0] if not df[col].dropna().empty else None
                 if sample is not None and isinstance(sample, (list, dict, tuple, set)):
-                    errors.append(
-                        f"Column '{col}' contains unsupported complex nested datatype: {type(sample)}"
-                    )
+                    errors.append(f"Column '{col}' contains unsupported complex nested datatype: {type(sample)}")
 
         is_valid = len(errors) == 0
-        return ValidationResult(
-            is_valid=is_valid, errors=errors, warnings=warnings, check_logs=logs
-        )
+        return ValidationResult(is_valid=is_valid, errors=errors, warnings=warnings, check_logs=logs)

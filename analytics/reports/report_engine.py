@@ -21,9 +21,7 @@ class ReportingEngine:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         analytics_logger.info(f"Initialized Reporting Engine with output directory: {self.output_dir}")
 
-    def run_reporting(
-        self, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> Dict[str, Dict[str, Path]]:
+    def run_reporting(self, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> Dict[str, Dict[str, Path]]:
         """Generates all reports (Executive, Technical, Business) in MD, HTML, and PDF formats.
 
         Args:

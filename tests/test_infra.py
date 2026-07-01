@@ -6,9 +6,14 @@ import pandas as pd
 import pytest
 
 from config import Environment, settings
-from utils import (ValidationError, clean_column_names,
-                   parse_timestamp_to_datetime, validate_decimal_precision,
-                   validate_in_range, validate_is_positive)
+from utils import (
+    ValidationError,
+    clean_column_names,
+    parse_timestamp_to_datetime,
+    validate_decimal_precision,
+    validate_in_range,
+    validate_is_positive,
+)
 
 
 def test_settings_loaded() -> None:
@@ -23,9 +28,7 @@ def test_settings_loaded() -> None:
 
 def test_clean_column_names() -> None:
     """Verifies formatting logic of header cleaners."""
-    df = pd.DataFrame(
-        columns=["Closed PnL ($)", "Coin/Symbol", "QTY-1", "  spaced_col  "]
-    )
+    df = pd.DataFrame(columns=["Closed PnL ($)", "Coin/Symbol", "QTY-1", "  spaced_col  "])
     cleaned_df = clean_column_names(df)
     assert list(cleaned_df.columns) == [
         "closed_pnl",

@@ -87,9 +87,7 @@ class CoinAnalysis:
             max_loss = float(pnl_series.min())
 
             trade_volume = float(group["trade_value"].fillna(0.0).sum())
-            average_trade_size = (
-                float(group["size"].mean()) if "size" in group.columns else 0.0
-            )
+            average_trade_size = float(group["size"].mean()) if "size" in group.columns else 0.0
 
             # Win Rate
             winning_trades = len(group[group["closed_pnl"] > 0])
@@ -100,9 +98,7 @@ class CoinAnalysis:
             # Custom Risk Score (0-100)
             loss_component = loss_rate * 60.0
             pnl_std = pnl_series.std() if len(pnl_series) > 1 else 0.0
-            vol_mean = (
-                group["trade_value"].mean() if not group["trade_value"].empty else 1.0
-            )
+            vol_mean = group["trade_value"].mean() if not group["trade_value"].empty else 1.0
             vol_mean = 1.0 if vol_mean == 0.0 else vol_mean
 
             pnl_vol_component = min(40.0, (pnl_std / vol_mean) * 40.0)

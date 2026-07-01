@@ -24,9 +24,7 @@ def plot_cumulative_pnl_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
         Optional[plt.Figure]: Matplotlib Figure object, or None if required columns missing.
     """
     if "timestamp" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'timestamp' or 'closed_pnl' for cumulative PnL static plot."
-        )
+        analytics_logger.warning("Missing 'timestamp' or 'closed_pnl' for cumulative PnL static plot.")
         return None
 
     # Ensure chronological order
@@ -68,9 +66,7 @@ def plot_cumulative_pnl_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure object, or None if required columns missing.
     """
     if "timestamp" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'timestamp' or 'closed_pnl' for cumulative PnL interactive plot."
-        )
+        analytics_logger.warning("Missing 'timestamp' or 'closed_pnl' for cumulative PnL interactive plot.")
         return None
 
     data = df.sort_values("timestamp").copy()
@@ -125,9 +121,7 @@ def plot_daily_pnl_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
         Optional[plt.Figure]: Matplotlib Figure object, or None if required columns missing.
     """
     if "timestamp" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'timestamp' or 'closed_pnl' for daily PnL static plot."
-        )
+        analytics_logger.warning("Missing 'timestamp' or 'closed_pnl' for daily PnL static plot.")
         return None
 
     # Aggregate by date
@@ -173,9 +167,7 @@ def plot_daily_pnl_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure object, or None if required columns missing.
     """
     if "timestamp" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'timestamp' or 'closed_pnl' for daily PnL interactive plot."
-        )
+        analytics_logger.warning("Missing 'timestamp' or 'closed_pnl' for daily PnL interactive plot.")
         return None
 
     # Aggregate by date
@@ -184,10 +176,7 @@ def plot_daily_pnl_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
     daily_pnl = data.groupby("date")["closed_pnl"].sum().reset_index()
 
     # Color code
-    daily_pnl["color"] = [
-        "rgba(34, 197, 94, 0.85)" if p >= 0 else "rgba(239, 68, 68, 0.85)"
-        for p in daily_pnl["closed_pnl"]
-    ]
+    daily_pnl["color"] = ["rgba(34, 197, 94, 0.85)" if p >= 0 else "rgba(239, 68, 68, 0.85)" for p in daily_pnl["closed_pnl"]]
 
     fig = go.Figure()
     fig.add_trace(
@@ -205,9 +194,7 @@ def plot_daily_pnl_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
             font=dict(size=18, family="Outfit, Inter, sans-serif"),
             x=0.5,
         ),
-        xaxis=dict(
-            title="Date", gridcolor="rgba(200, 200, 200, 0.15)", type="category"
-        ),
+        xaxis=dict(title="Date", gridcolor="rgba(200, 200, 200, 0.15)", type="category"),
         yaxis=dict(title="PnL (USDT)", gridcolor="rgba(200, 200, 200, 0.15)"),
         template="plotly_dark",
         paper_bgcolor="rgba(15, 23, 42, 1)",

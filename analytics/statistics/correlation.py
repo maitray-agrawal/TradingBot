@@ -42,15 +42,11 @@ class CorrelationCalculator:
                 exit_t = pd.to_datetime(df_temp["exit_timestamp"])
                 df_temp["holding_time_seconds"] = (exit_t - entry).dt.total_seconds()
             except Exception as e:
-                analytics_logger.warning(
-                    f"Could not compute holding time for correlation: {e}"
-                )
+                analytics_logger.warning(f"Could not compute holding time for correlation: {e}")
 
         # Target pairs to correlate with 'fg_value' (Fear & Greed Index value)
         if "fg_value" not in df_temp.columns:
-            analytics_logger.warning(
-                "Fear & Greed Index ('fg_value') not present in data."
-            )
+            analytics_logger.warning("Fear & Greed Index ('fg_value') not present in data.")
             return results
 
         target_vars = [
@@ -70,9 +66,7 @@ class CorrelationCalculator:
 
             # Check size constraints
             if len(pair_df) < 3:
-                analytics_logger.warning(
-                    f"Insufficient data points ({len(pair_df)}) for correlating fg_value vs {var}."
-                )
+                analytics_logger.warning(f"Insufficient data points ({len(pair_df)}) for correlating fg_value vs {var}.")
                 continue
 
             x = pair_df["fg_value"]
@@ -80,18 +74,14 @@ class CorrelationCalculator:
 
             # Check for zero variance
             if x.std() == 0 or y.std() == 0:
-                analytics_logger.warning(
-                    f"Zero variance in either fg_value or {var}. Skipping correlation."
-                )
+                analytics_logger.warning(f"Zero variance in either fg_value or {var}. Skipping correlation.")
                 continue
 
             # Pearson
             try:
                 pearson_coef, pearson_p = stats.pearsonr(x, y)
             except Exception as e:
-                analytics_logger.error(
-                    f"Pearson calculation failed for fg_value vs {var}: {e}"
-                )
+                analytics_logger.error(f"Pearson calculation failed for fg_value vs {var}: {e}")
                 pearson_coef, pearson_p = np.nan, np.nan
 
             # Spearman
@@ -99,9 +89,7 @@ class CorrelationCalculator:
                 spearman_res = stats.spearmanr(x, y)
                 spearman_coef, spearman_p = spearman_res.statistic, spearman_res.pvalue
             except Exception as e:
-                analytics_logger.error(
-                    f"Spearman calculation failed for fg_value vs {var}: {e}"
-                )
+                analytics_logger.error(f"Spearman calculation failed for fg_value vs {var}: {e}")
                 spearman_coef, spearman_p = np.nan, np.nan
 
             # Kendall
@@ -109,38 +97,24 @@ class CorrelationCalculator:
                 kendall_res = stats.kendalltau(x, y)
                 kendall_coef, kendall_p = kendall_res.correlation, kendall_res.pvalue
             except Exception as e:
-                analytics_logger.error(
-                    f"Kendall calculation failed for fg_value vs {var}: {e}"
-                )
+                analytics_logger.error(f"Kendall calculation failed for fg_value vs {var}: {e}")
                 kendall_coef, kendall_p = np.nan, np.nan
 
             results[f"fg_value_vs_{var}"] = {
                 "pearson": {
-                    "coefficient": (
-                        float(pearson_coef) if not np.isnan(pearson_coef) else None
-                    ),
+                    "coefficient": (float(pearson_coef) if not np.isnan(pearson_coef) else None),
                     "p_value": float(pearson_p) if not np.isnan(pearson_p) else None,
-                    "significant": (
-                        bool(pearson_p < 0.05) if not np.isnan(pearson_p) else False
-                    ),
+                    "significant": (bool(pearson_p < 0.05) if not np.isnan(pearson_p) else False),
                 },
                 "spearman": {
-                    "coefficient": (
-                        float(spearman_coef) if not np.isnan(spearman_coef) else None
-                    ),
+                    "coefficient": (float(spearman_coef) if not np.isnan(spearman_coef) else None),
                     "p_value": float(spearman_p) if not np.isnan(spearman_p) else None,
-                    "significant": (
-                        bool(spearman_p < 0.05) if not np.isnan(spearman_p) else False
-                    ),
+                    "significant": (bool(spearman_p < 0.05) if not np.isnan(spearman_p) else False),
                 },
                 "kendall": {
-                    "coefficient": (
-                        float(kendall_coef) if not np.isnan(kendall_coef) else None
-                    ),
+                    "coefficient": (float(kendall_coef) if not np.isnan(kendall_coef) else None),
                     "p_value": float(kendall_p) if not np.isnan(kendall_p) else None,
-                    "significant": (
-                        bool(kendall_p < 0.05) if not np.isnan(kendall_p) else False
-                    ),
+                    "significant": (bool(kendall_p < 0.05) if not np.isnan(kendall_p) else False),
                 },
                 "sample_size": len(pair_df),
             }

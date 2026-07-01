@@ -69,22 +69,16 @@ class MarketAnalysis:
         # Buy/Sell Ratio
         buys = side_counts.get("BUY", 0)
         sells = side_counts.get("SELL", 0)
-        buy_sell_ratio = (
-            buys / sells if sells > 0 else float("inf") if buys > 0 else 0.0
-        )
+        buy_sell_ratio = buys / sells if sells > 0 else float("inf") if buys > 0 else 0.0
 
         # Herfindahl-Hirschman Index (HHI) for Volume Concentration
         total_vol = sum(volume_by_symbol.values())
         hhi = 0.0
         if total_vol > 0:
-            hhi = (
-                sum((val / total_vol) ** 2 for val in volume_by_symbol.values()) * 10000
-            )
+            hhi = sum((val / total_vol) ** 2 for val in volume_by_symbol.values()) * 10000
 
         # Top traded symbols ranked by trade count
-        top_symbols = sorted(
-            symbol_counts.keys(), key=lambda x: symbol_counts[x], reverse=True
-        )
+        top_symbols = sorted(symbol_counts.keys(), key=lambda x: symbol_counts[x], reverse=True)
 
         analytics_logger.info("Market analysis completed successfully.")
         return MarketAnalysisResult(

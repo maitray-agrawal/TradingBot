@@ -93,9 +93,7 @@ def test_descriptive_statistics(sample_stats_data):
     assert pnl_stats["min"] == -25.0
     assert pnl_stats["max"] == 30.0
     assert pnl_stats["mean"] == pytest.approx(sample_stats_data["closed_pnl"].mean())
-    assert pnl_stats["median"] == pytest.approx(
-        sample_stats_data["closed_pnl"].median()
-    )
+    assert pnl_stats["median"] == pytest.approx(sample_stats_data["closed_pnl"].median())
     assert pnl_stats["std_dev"] == pytest.approx(sample_stats_data["closed_pnl"].std())
     assert "quantile_25" in pnl_stats
     assert "quantile_75" in pnl_stats
@@ -208,9 +206,7 @@ def test_summary_observations(sample_stats_data):
 
     assert len(observations) > 0
     # Checks that typical observation segments are generated
-    assert any("Normality" in obs for obs in observations) or any(
-        "normality" in obs for obs in observations
-    )
+    assert any("Normality" in obs for obs in observations) or any("normality" in obs for obs in observations)
 
 
 def test_statistics_engine_execution(sample_stats_data, monkeypatch):
@@ -224,9 +220,7 @@ def test_statistics_engine_execution(sample_stats_data, monkeypatch):
         monkeypatch.setattr(config.paths, "ANALYTICS_OUTPUT_DIR", tmp_path)
 
         # Run orchestrator
-        results = StatisticsEngine.run_statistics(
-            df=sample_stats_data, export_outputs=True
-        )
+        results = StatisticsEngine.run_statistics(df=sample_stats_data, export_outputs=True)
 
         assert "descriptive" in results
         assert "correlations" in results

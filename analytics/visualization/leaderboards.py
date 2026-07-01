@@ -23,16 +23,12 @@ def plot_coin_leaderboard_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
         Optional[plt.Figure]: Matplotlib Figure, or None if required columns missing.
     """
     if "symbol" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'symbol' or 'closed_pnl' for coin leaderboard static plot."
-        )
+        analytics_logger.warning("Missing 'symbol' or 'closed_pnl' for coin leaderboard static plot.")
         return None
 
     # Group by symbol and get net PnL
     coin_perf = df.groupby("symbol")["closed_pnl"].sum().reset_index()
-    coin_perf = coin_perf.sort_values(
-        "closed_pnl", ascending=True
-    )  # Ascending for horizontal bar ordering
+    coin_perf = coin_perf.sort_values("closed_pnl", ascending=True)  # Ascending for horizontal bar ordering
 
     if coin_perf.empty:
         return None
@@ -71,9 +67,7 @@ def plot_coin_leaderboard_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure, or None if required columns missing.
     """
     if "symbol" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'symbol' or 'closed_pnl' for coin leaderboard interactive plot."
-        )
+        analytics_logger.warning("Missing 'symbol' or 'closed_pnl' for coin leaderboard interactive plot.")
         return None
 
     coin_perf = df.groupby("symbol")["closed_pnl"].sum().reset_index()
@@ -82,10 +76,7 @@ def plot_coin_leaderboard_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
     if coin_perf.empty:
         return None
 
-    coin_perf["color"] = [
-        "rgba(34, 197, 94, 0.85)" if p >= 0 else "rgba(239, 68, 68, 0.85)"
-        for p in coin_perf["closed_pnl"]
-    ]
+    coin_perf["color"] = ["rgba(34, 197, 94, 0.85)" if p >= 0 else "rgba(239, 68, 68, 0.85)" for p in coin_perf["closed_pnl"]]
 
     fig = go.Figure()
     fig.add_trace(
@@ -104,9 +95,7 @@ def plot_coin_leaderboard_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
             font=dict(size=18, family="Outfit, Inter, sans-serif"),
             x=0.5,
         ),
-        xaxis=dict(
-            title="Net Realized PnL (USDT)", gridcolor="rgba(200, 200, 200, 0.15)"
-        ),
+        xaxis=dict(title="Net Realized PnL (USDT)", gridcolor="rgba(200, 200, 200, 0.15)"),
         yaxis=dict(title="Symbol"),
         template="plotly_dark",
         paper_bgcolor="rgba(15, 23, 42, 1)",
@@ -127,9 +116,7 @@ def plot_trader_leaderboard_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]
         Optional[plt.Figure]: Matplotlib Figure, or None if required columns missing.
     """
     if "account_id" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'account_id' or 'closed_pnl' for trader leaderboard static plot."
-        )
+        analytics_logger.warning("Missing 'account_id' or 'closed_pnl' for trader leaderboard static plot.")
         return None
 
     trader_perf = df.groupby("account_id")["closed_pnl"].sum().reset_index()
@@ -142,9 +129,7 @@ def plot_trader_leaderboard_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]
 
     colors = ["#22C55E" if val >= 0 else "#EF4444" for val in trader_perf["closed_pnl"]]
 
-    ax.barh(
-        trader_perf["account_id"], trader_perf["closed_pnl"], color=colors, height=0.6
-    )
+    ax.barh(trader_perf["account_id"], trader_perf["closed_pnl"], color=colors, height=0.6)
 
     ax.set_title(
         "Performance Leaderboard by Trader Account",
@@ -173,9 +158,7 @@ def plot_trader_leaderboard_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure, or None if required columns missing.
     """
     if "account_id" not in df.columns or "closed_pnl" not in df.columns:
-        analytics_logger.warning(
-            "Missing 'account_id' or 'closed_pnl' for trader leaderboard interactive plot."
-        )
+        analytics_logger.warning("Missing 'account_id' or 'closed_pnl' for trader leaderboard interactive plot.")
         return None
 
     trader_perf = df.groupby("account_id")["closed_pnl"].sum().reset_index()
@@ -185,8 +168,7 @@ def plot_trader_leaderboard_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         return None
 
     trader_perf["color"] = [
-        "rgba(34, 197, 94, 0.85)" if p >= 0 else "rgba(239, 68, 68, 0.85)"
-        for p in trader_perf["closed_pnl"]
+        "rgba(34, 197, 94, 0.85)" if p >= 0 else "rgba(239, 68, 68, 0.85)" for p in trader_perf["closed_pnl"]
     ]
 
     fig = go.Figure()
@@ -206,9 +188,7 @@ def plot_trader_leaderboard_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
             font=dict(size=18, family="Outfit, Inter, sans-serif"),
             x=0.5,
         ),
-        xaxis=dict(
-            title="Net Realized PnL (USDT)", gridcolor="rgba(200, 200, 200, 0.15)"
-        ),
+        xaxis=dict(title="Net Realized PnL (USDT)", gridcolor="rgba(200, 200, 200, 0.15)"),
         yaxis=dict(title="Account ID"),
         template="plotly_dark",
         paper_bgcolor="rgba(15, 23, 42, 1)",

@@ -93,9 +93,7 @@ class HypothesisTester:
             sentiment_col = "fg_classification"
 
         if not sentiment_col:
-            analytics_logger.warning(
-                "Sentiment classification columns missing. Hypothesis tests skipped."
-            )
+            analytics_logger.warning("Sentiment classification columns missing. Hypothesis tests skipped.")
             return results
 
         # Categorize into Fear and Greed groups for two-sample tests
@@ -104,12 +102,8 @@ class HypothesisTester:
         fear_regimes = ["Fear", "Extreme Fear"]
         greed_regimes = ["Greed", "Extreme Greed"]
 
-        fear_data = df_clean[df_clean[sentiment_col].isin(fear_regimes)][
-            "closed_pnl"
-        ].dropna()
-        greed_data = df_clean[df_clean[sentiment_col].isin(greed_regimes)][
-            "closed_pnl"
-        ].dropna()
+        fear_data = df_clean[df_clean[sentiment_col].isin(fear_regimes)]["closed_pnl"].dropna()
+        greed_data = df_clean[df_clean[sentiment_col].isin(greed_regimes)]["closed_pnl"].dropna()
 
         n_fear = len(fear_data)
         n_greed = len(greed_data)
@@ -132,9 +126,7 @@ class HypothesisTester:
                         "message": "Zero variance in both groups.",
                     }
                 else:
-                    t_stat, t_p = stats.ttest_ind(
-                        fear_data, greed_data, equal_var=False
-                    )
+                    t_stat, t_p = stats.ttest_ind(fear_data, greed_data, equal_var=False)
                     results["t_test"] = {
                         "stat": float(t_stat) if not np.isnan(t_stat) else None,
                         "p_value": float(t_p) if not np.isnan(t_p) else None,
@@ -148,9 +140,7 @@ class HypothesisTester:
         # 2. Mann-Whitney U Test (non-parametric two-sample test)
         if n_fear >= 1 and n_greed >= 1:
             try:
-                mw_stat, mw_p = stats.mannwhitneyu(
-                    fear_data, greed_data, alternative="two-sided"
-                )
+                mw_stat, mw_p = stats.mannwhitneyu(fear_data, greed_data, alternative="two-sided")
                 results["mann_whitney"] = {
                     "stat": float(mw_stat) if not np.isnan(mw_stat) else None,
                     "p_value": float(mw_p) if not np.isnan(mw_p) else None,
@@ -163,14 +153,10 @@ class HypothesisTester:
 
         # 3. One-Way ANOVA (Compare returns across all active sentiment regimes)
         # We group by the classification column and gather closed_pnl lists
-        regime_groups = (
-            df_clean.groupby(sentiment_col)["closed_pnl"].apply(list).to_dict()
-        )
+        regime_groups = df_clean.groupby(sentiment_col)["closed_pnl"].apply(list).to_dict()
         # Filter groups to only those with >= 2 data points, and exclude Unknown/NaN
         anova_groups = [
-            np.array(pnl_list)
-            for name, pnl_list in regime_groups.items()
-            if name != "Unknown" and len(pnl_list) >= 2
+            np.array(pnl_list) for name, pnl_list in regime_groups.items() if name != "Unknown" and len(pnl_list) >= 2
         ]
 
         if len(anova_groups) >= 2:
@@ -179,18 +165,14 @@ class HypothesisTester:
                 results["anova"] = {
                     "stat": float(anova_stat) if not np.isnan(anova_stat) else None,
                     "p_value": float(anova_p) if not np.isnan(anova_p) else None,
-                    "significant": (
-                        bool(anova_p < 0.05) if not np.isnan(anova_p) else False
-                    ),
+                    "significant": (bool(anova_p < 0.05) if not np.isnan(anova_p) else False),
                     "message": "Success",
                 }
             except Exception as e:
                 analytics_logger.error(f"Error executing ANOVA: {e}")
                 results["anova"]["message"] = f"Execution error: {e}"
         else:
-            results["anova"][
-                "message"
-            ] = "ANOVA requires at least 2 regimes with at least 2 trade samples each."
+            results["anova"]["message"] = "ANOVA requires at least 2 regimes with at least 2 trade samples each."
 
         # 4. Chi-Square Test of Independence (regime vs trade outcome [win / loss])
         # Define trade outcome: Win if closed_pnl > 0, Loss if closed_pnl <= 0
@@ -205,15 +187,11 @@ class HypothesisTester:
             # Chi-square requirements: table must have at least 2x2 dimensions and non-zero counts
             if contingency_table.shape[0] >= 2 and contingency_table.shape[1] >= 2:
                 try:
-                    chi2_stat, chi2_p, dof, expected = stats.chi2_contingency(
-                        contingency_table
-                    )
+                    chi2_stat, chi2_p, dof, expected = stats.chi2_contingency(contingency_table)
                     results["chi_square"] = {
                         "stat": float(chi2_stat) if not np.isnan(chi2_stat) else None,
                         "p_value": float(chi2_p) if not np.isnan(chi2_p) else None,
-                        "significant": (
-                            bool(chi2_p < 0.05) if not np.isnan(chi2_p) else False
-                        ),
+                        "significant": (bool(chi2_p < 0.05) if not np.isnan(chi2_p) else False),
                         "dof": int(dof),
                         "message": "Success",
                     }
@@ -221,13 +199,9 @@ class HypothesisTester:
                     analytics_logger.error(f"Error executing Chi-Square test: {e}")
                     results["chi_square"]["message"] = f"Execution error: {e}"
             else:
-                results["chi_square"][
-                    "message"
-                ] = "Chi-Square requires a contingency table of at least 2x2 shape."
+                results["chi_square"]["message"] = "Chi-Square requires a contingency table of at least 2x2 shape."
         else:
-            results["chi_square"][
-                "message"
-            ] = "No valid data to construct cross-tabulation table."
+            results["chi_square"]["message"] = "No valid data to construct cross-tabulation table."
 
         analytics_logger.info("Hypothesis testing suite execution complete.")
         return results

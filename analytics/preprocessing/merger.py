@@ -29,15 +29,11 @@ class DatasetMerger:
             pd.DataFrame: Combined dataset.
         """
         if trader_df.empty:
-            analytics_logger.warning(
-                "Trader dataframe is empty. Merged output will be empty."
-            )
+            analytics_logger.warning("Trader dataframe is empty. Merged output will be empty.")
             return trader_df.copy()
 
         if fg_df.empty:
-            analytics_logger.warning(
-                "Fear & Greed dataframe is empty. Cannot merge. Returning trader data."
-            )
+            analytics_logger.warning("Fear & Greed dataframe is empty. Cannot merge. Returning trader data.")
             # Add null columns for alignment
             result = trader_df.copy()
             result["fg_value"] = None
@@ -48,16 +44,8 @@ class DatasetMerger:
         trader_df = trader_df.copy()
         fg_df = fg_df.copy()
 
-        trader_df["timestamp"] = (
-            pd.to_datetime(trader_df["timestamp"])
-            .dt.tz_localize(None)
-            .astype("datetime64[ns]")
-        )
-        fg_df["timestamp"] = (
-            pd.to_datetime(fg_df["timestamp"])
-            .dt.tz_localize(None)
-            .astype("datetime64[ns]")
-        )
+        trader_df["timestamp"] = pd.to_datetime(trader_df["timestamp"]).dt.tz_localize(None).astype("datetime64[ns]")
+        fg_df["timestamp"] = pd.to_datetime(fg_df["timestamp"]).dt.tz_localize(None).astype("datetime64[ns]")
 
         # Sort by timestamp
         trader_df.sort_values(by="timestamp", inplace=True)
@@ -84,22 +72,16 @@ class DatasetMerger:
             fg_df.drop_duplicates(subset=["temp_date"], keep="first", inplace=True)
 
             # Merge on temp_date
-            merged_df = pd.merge(
-                trader_df, fg_df.drop(columns=["timestamp"]), on="temp_date", how="left"
-            )
+            merged_df = pd.merge(trader_df, fg_df.drop(columns=["timestamp"]), on="temp_date", how="left")
             merged_df.drop(columns=["temp_date"], inplace=True)
 
         elif strategy in ("nearest", "backward"):
             # Use pd.merge_asof
             # If 'backward', matches values where fg_timestamp <= trader_timestamp (no lookahead)
             # If 'nearest', matches closest fg_timestamp regardless of direction
-            merged_df = pd.merge_asof(
-                trader_df, fg_df, on="timestamp", direction=strategy
-            )
+            merged_df = pd.merge_asof(trader_df, fg_df, on="timestamp", direction=strategy)
         else:
             raise ValueError(f"Unknown merge strategy: {strategy}")
 
-        analytics_logger.info(
-            f"Successfully merged datasets. Total rows: {len(merged_df)}"
-        )
+        analytics_logger.info(f"Successfully merged datasets. Total rows: {len(merged_df)}")
         return merged_df

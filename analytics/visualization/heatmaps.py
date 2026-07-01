@@ -25,30 +25,20 @@ def plot_hourly_activity_matplotlib(df: pd.DataFrame) -> Optional[plt.Figure]:
         Optional[plt.Figure]: Matplotlib Figure, or None if required columns missing.
     """
     data = df.copy()
-    if "timestamp" in data.columns and (
-        "hour" not in data.columns or "weekday" not in data.columns
-    ):
+    if "timestamp" in data.columns and ("hour" not in data.columns or "weekday" not in data.columns):
         data["timestamp"] = pd.to_datetime(data["timestamp"])
         data["hour"] = data["timestamp"].dt.hour
         data["weekday"] = data["timestamp"].dt.weekday
 
-    if (
-        "hour" not in data.columns
-        or "weekday" not in data.columns
-        or "closed_pnl" not in data.columns
-    ):
-        analytics_logger.warning(
-            "Missing 'hour', 'weekday' or 'closed_pnl' for activity heatmap static plot."
-        )
+    if "hour" not in data.columns or "weekday" not in data.columns or "closed_pnl" not in data.columns:
+        analytics_logger.warning("Missing 'hour', 'weekday' or 'closed_pnl' for activity heatmap static plot.")
         return None
 
     if data.empty:
         return None
 
     # Pivot: hour of day (y) vs weekday (x)
-    pivot_df = data.pivot_table(
-        index="hour", columns="weekday", values="closed_pnl", aggfunc="mean"
-    )
+    pivot_df = data.pivot_table(index="hour", columns="weekday", values="closed_pnl", aggfunc="mean")
 
     # Fill empty slots with 0
     pivot_df = pivot_df.reindex(index=range(24), columns=range(7), fill_value=0.0)
@@ -101,30 +91,20 @@ def plot_hourly_activity_plotly(df: pd.DataFrame) -> Optional[go.Figure]:
         Optional[go.Figure]: Plotly Figure, or None if required columns missing.
     """
     data = df.copy()
-    if "timestamp" in data.columns and (
-        "hour" not in data.columns or "weekday" not in data.columns
-    ):
+    if "timestamp" in data.columns and ("hour" not in data.columns or "weekday" not in data.columns):
         data["timestamp"] = pd.to_datetime(data["timestamp"])
         data["hour"] = data["timestamp"].dt.hour
         data["weekday"] = data["timestamp"].dt.weekday
 
-    if (
-        "hour" not in data.columns
-        or "weekday" not in data.columns
-        or "closed_pnl" not in data.columns
-    ):
-        analytics_logger.warning(
-            "Missing 'hour', 'weekday' or 'closed_pnl' for activity heatmap interactive plot."
-        )
+    if "hour" not in data.columns or "weekday" not in data.columns or "closed_pnl" not in data.columns:
+        analytics_logger.warning("Missing 'hour', 'weekday' or 'closed_pnl' for activity heatmap interactive plot.")
         return None
 
     if data.empty:
         return None
 
     # Pivot: hour of day (y) vs weekday (x)
-    pivot_df = data.pivot_table(
-        index="hour", columns="weekday", values="closed_pnl", aggfunc="mean"
-    )
+    pivot_df = data.pivot_table(index="hour", columns="weekday", values="closed_pnl", aggfunc="mean")
     pivot_df = pivot_df.reindex(index=range(24), columns=range(7), fill_value=0.0)
 
     days = [

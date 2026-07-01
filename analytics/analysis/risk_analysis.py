@@ -95,14 +95,8 @@ class RiskAnalysis:
         best_trades = pnl_series.nlargest(3).tolist()
         worst_trades = pnl_series.nsmallest(3).tolist()
 
-        top_3_profit_share = (
-            sum(best_trades) / gross_profit if gross_profit > 0 else 0.0
-        )
-        top_3_loss_share = (
-            sum(abs(w) for w in worst_trades) / abs(gross_loss)
-            if gross_loss < 0
-            else 0.0
-        )
+        top_3_profit_share = sum(best_trades) / gross_profit if gross_profit > 0 else 0.0
+        top_3_loss_share = sum(abs(w) for w in worst_trades) / abs(gross_loss) if gross_loss < 0 else 0.0
 
         # HHI of trade values
         if "trade_value" not in df.columns:
@@ -112,9 +106,7 @@ class RiskAnalysis:
 
         sum_trade_values = trade_values.sum()
         if sum_trade_values > 0:
-            trade_value_hhi = float(
-                sum((val / sum_trade_values) ** 2 for val in trade_values) * 10000
-            )
+            trade_value_hhi = float(sum((val / sum_trade_values) ** 2 for val in trade_values) * 10000)
         else:
             trade_value_hhi = 0.0
 
@@ -139,9 +131,7 @@ class RiskAnalysis:
         avg_trade_val = 1.0 if avg_trade_val == 0.0 else avg_trade_val
         volatility_penalty = min(30.0, (pnl_volatility / avg_trade_val) * 30.0)
 
-        composite_risk_score = min(
-            100.0, win_rate_penalty + drawdown_penalty + volatility_penalty
-        )
+        composite_risk_score = min(100.0, win_rate_penalty + drawdown_penalty + volatility_penalty)
 
         analytics_logger.info("Risk analysis completed successfully.")
         return RiskAnalysisResult(

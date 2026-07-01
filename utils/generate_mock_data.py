@@ -48,9 +48,7 @@ def generate_mock_datasets():
     fg_df = pd.DataFrame(fg_records)
     fg_path = data_dir / "mock_fear_greed_index.csv"
     fg_df.to_csv(fg_path, index=False)
-    analytics_logger.info(
-        f"Saved mock Fear & Greed index to {fg_path} ({len(fg_df)} rows)."
-    )
+    analytics_logger.info(f"Saved mock Fear & Greed index to {fg_path} ({len(fg_df)} rows).")
 
     # 2. Generate Historical Trader Dataset (XLSX format)
     # Target columns: account, coin, symbol, price, execution price, closed pnl, side, size, timestamp
@@ -68,11 +66,7 @@ def generate_mock_datasets():
         symbol = np.random.choice(symbols)
         side = np.random.choice(["BUY", "SELL", "LONG", "SHORT"])
         size = round(
-            (
-                np.random.uniform(0.01, 1.5)
-                if symbol == "BTCUSDT"
-                else np.random.uniform(0.1, 15.0)
-            ),
+            (np.random.uniform(0.01, 1.5) if symbol == "BTCUSDT" else np.random.uniform(0.1, 15.0)),
             4,
         )
 
@@ -122,9 +116,7 @@ def generate_mock_datasets():
 
     trader_path = data_dir / "mock_trader_history.xlsx"
     trader_df.to_excel(trader_path, index=False)
-    analytics_logger.info(
-        f"Saved mock Trader History to {trader_path} ({len(trader_df)} rows)."
-    )
+    analytics_logger.info(f"Saved mock Trader History to {trader_path} ({len(trader_df)} rows).")
 
 
 if __name__ == "__main__":

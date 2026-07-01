@@ -83,13 +83,9 @@ def generate_all_interactive_plots(df: pd.DataFrame) -> Dict[str, str]:
             if fig is not None:
                 manifest[key] = save_plotly_html(fig, key)
             else:
-                analytics_logger.warning(
-                    f"Plotly function for '{key}' returned None. Skipping."
-                )
+                analytics_logger.warning(f"Plotly function for '{key}' returned None. Skipping.")
         except Exception as e:
-            analytics_logger.error(
-                f"Failed to generate interactive plot '{key}': {e}", exc_info=True
-            )
+            analytics_logger.error(f"Failed to generate interactive plot '{key}': {e}", exc_info=True)
 
     return manifest
 
@@ -117,19 +113,11 @@ def generate_unified_dashboard(df: pd.DataFrame) -> Optional[str]:
         wins = pnl_col[pnl_col > 0]
         losses = pnl_col[pnl_col < 0]
 
-        win_rate = (
-            (len(wins) / len(pnl_col[pnl_col != 0]) * 100)
-            if len(pnl_col[pnl_col != 0]) > 0
-            else 0.0
-        )
+        win_rate = (len(wins) / len(pnl_col[pnl_col != 0]) * 100) if len(pnl_col[pnl_col != 0]) > 0 else 0.0
 
         gross_profit = wins.sum()
         gross_loss = abs(losses.sum())
-        profit_factor = (
-            (gross_profit / gross_loss)
-            if gross_loss > 0
-            else (gross_profit if gross_profit > 0 else 1.0)
-        )
+        profit_factor = (gross_profit / gross_loss) if gross_loss > 0 else (gross_profit if gross_profit > 0 else 1.0)
 
         # Generate figures
         fig_cum_pnl = plot_cumulative_pnl_plotly(df)
@@ -376,13 +364,9 @@ def generate_unified_dashboard(df: pd.DataFrame) -> Optional[str]:
         dashboard_path = config.paths.CHARTS_OUTPUT_DIR / "unified_dashboard.html"
         dashboard_path.write_text(html_template, encoding="utf-8")
 
-        analytics_logger.info(
-            f"Generated unified dashboard successfully at: {dashboard_path.name}"
-        )
+        analytics_logger.info(f"Generated unified dashboard successfully at: {dashboard_path.name}")
         return str(dashboard_path.resolve())
 
     except Exception as e:
-        analytics_logger.error(
-            f"Failed to generate unified dashboard: {e}", exc_info=True
-        )
+        analytics_logger.error(f"Failed to generate unified dashboard: {e}", exc_info=True)
         return None

@@ -1,12 +1,12 @@
 # Centralized trading bot exports for PrimeTrade AI
 
-from .client import BinanceTestnetClient
-from .orders import FuturesOrder
-from .validators import OrderValidator
-from .risk_manager import RiskManager, RiskConfig
-from .position_manager import PositionManager
-from .order_manager import OrderManager
 from .cli import bot_cli
+from .client import BinanceTestnetClient
+from .order_manager import OrderManager
+from .orders import FuturesOrder
+from .position_manager import PositionManager
+from .risk_manager import RiskConfig, RiskManager
+from .validators import OrderValidator
 
 __all__ = [
     "BinanceTestnetClient",

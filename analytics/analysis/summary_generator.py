@@ -38,9 +38,7 @@ class SummaryGenerator:
         Returns:
             Dict[str, Any]: Textual report summaries and lists of insights.
         """
-        analytics_logger.info(
-            "Generating intelligence summaries and recommendations..."
-        )
+        analytics_logger.info("Generating intelligence summaries and recommendations...")
 
         # 1. Executive Summary text
         tot_trades = performance_results.total_trades
@@ -85,18 +83,12 @@ class SummaryGenerator:
                 )
 
             if win_rate > 55.0:
-                insights.append(
-                    f"High overall win rate of {win_rate:.1f}% indicates a strong directional edge."
-                )
+                insights.append(f"High overall win rate of {win_rate:.1f}% indicates a strong directional edge.")
             elif profit_factor > 1.5:
-                insights.append(
-                    f"Strong profit factor of {profit_factor:.2f} confirms profit sizes outpace loss sizes."
-                )
+                insights.append(f"Strong profit factor of {profit_factor:.2f} confirms profit sizes outpace loss sizes.")
 
             if not insights:
-                insights.append(
-                    "Historical trade outcomes are uniformly distributed with no single major driver."
-                )
+                insights.append("Historical trade outcomes are uniformly distributed with no single major driver.")
 
             # 3. Important Observations (Patterns)
             observations = []
@@ -128,9 +120,7 @@ class SummaryGenerator:
                 )
 
             if not observations:
-                observations.append(
-                    "No strong periodic or external correlation patterns detected."
-                )
+                observations.append("No strong periodic or external correlation patterns detected.")
 
             # 4. Business Recommendations
             recommendations = []
@@ -154,9 +144,7 @@ class SummaryGenerator:
                     f"Diversify across additional active symbols to mitigate asset-specific risks."
                 )
             else:
-                recommendations.append(
-                    "Maintain the current diversified allocation profile across traded assets."
-                )
+                recommendations.append("Maintain the current diversified allocation profile across traded assets.")
 
             # General risk control
             recommendations.append(

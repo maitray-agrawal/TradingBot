@@ -44,11 +44,7 @@ class StatsSummaryFormatter:
         shapiro_pnl = pnl_norm.get("shapiro", {}).get("p_value")
         if shapiro_pnl is not None:
             is_normal = pnl_norm.get("shapiro", {}).get("normal", False)
-            status = (
-                "follows a normal distribution"
-                if is_normal
-                else "does NOT follow a normal distribution"
-            )
+            status = "follows a normal distribution" if is_normal else "does NOT follow a normal distribution"
             observations.append(
                 f"Normality Test: Shapiro-Wilk test indicates that trade PnL returns {status} "
                 f"(p-value: {shapiro_pnl:.5f})."
@@ -62,17 +58,9 @@ class StatsSummaryFormatter:
         pearson_p = pnl_corr.get("pearson", {}).get("p_value")
 
         if pearson_coef is not None:
-            sig_text = (
-                "significant"
-                if pnl_corr.get("pearson", {}).get("significant")
-                else "non-significant"
-            )
+            sig_text = "significant" if pnl_corr.get("pearson", {}).get("significant") else "non-significant"
             dir_text = "positive" if pearson_coef > 0 else "negative"
-            strength = (
-                "weak"
-                if abs(pearson_coef) < 0.3
-                else ("moderate" if abs(pearson_coef) < 0.6 else "strong")
-            )
+            strength = "weak" if abs(pearson_coef) < 0.3 else ("moderate" if abs(pearson_coef) < 0.6 else "strong")
             observations.append(
                 f"Correlation Analysis: Fear & Greed index vs closed PnL has a {sig_text}, {strength} {dir_text} "
                 f"linear relationship (Pearson r: {pearson_coef:.4f}, p-value: {pearson_p:.5f})."
@@ -85,11 +73,7 @@ class StatsSummaryFormatter:
 
         t_p = t_test.get("p_value")
         if t_p is not None and t_test.get("message") == "Success":
-            sig_status = (
-                "significant difference"
-                if t_test.get("significant")
-                else "no significant difference"
-            )
+            sig_status = "significant difference" if t_test.get("significant") else "no significant difference"
             observations.append(
                 f"Welch's T-Test: Compares average closed PnL between Fear and Greed regimes. "
                 f"Results show {sig_status} in average performance (T-stat: {t_test.get('stat'):.4f}, p-value: {t_p:.5f})."
@@ -97,11 +81,7 @@ class StatsSummaryFormatter:
 
         mw_p = mw_test.get("p_value")
         if mw_p is not None and mw_test.get("message") == "Success":
-            sig_status = (
-                "significant difference"
-                if mw_test.get("significant")
-                else "no significant difference"
-            )
+            sig_status = "significant difference" if mw_test.get("significant") else "no significant difference"
             observations.append(
                 f"Mann-Whitney U Test: Compares return distributions between Fear and Greed regimes. "
                 f"Results show {sig_status} (U-stat: {mw_test.get('stat'):.1f}, p-value: {mw_p:.5f})."
@@ -111,11 +91,7 @@ class StatsSummaryFormatter:
         anova = ht_data.get("anova", {})
         anova_p = anova.get("p_value")
         if anova_p is not None and anova.get("message") == "Success":
-            sig_status = (
-                "significant difference"
-                if anova.get("significant")
-                else "no significant difference"
-            )
+            sig_status = "significant difference" if anova.get("significant") else "no significant difference"
             observations.append(
                 f"One-Way ANOVA: Evaluates performance across all active sentiment regimes. "
                 f"Indicates {sig_status} in mean returns across groups (F-stat: {anova.get('stat'):.4f}, p-value: {anova_p:.5f})."
@@ -133,8 +109,6 @@ class StatsSummaryFormatter:
 
         # Fallback if no observations generated
         if not observations:
-            observations.append(
-                "Insufficient data collected to formulate statistical observations."
-            )
+            observations.append("Insufficient data collected to formulate statistical observations.")
 
         return observations

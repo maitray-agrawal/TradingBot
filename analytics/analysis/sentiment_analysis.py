@@ -60,10 +60,7 @@ class SentimentAnalysis:
                 if r.value == class_str:
                     return r.value
                 # Match common variants (e.g. ExtremeFear -> Extreme Fear)
-                if (
-                    r.value.replace(" ", "").lower()
-                    == class_str.replace(" ", "").lower()
-                ):
+                if r.value.replace(" ", "").lower() == class_str.replace(" ", "").lower():
                     return r.value
 
         return None
@@ -113,11 +110,7 @@ class SentimentAnalysis:
             valid_df["trade_value"] = valid_df["size"] * valid_df["execution_price"]
 
         # Default fee column check
-        fee_col = (
-            "fees"
-            if "fees" in valid_df.columns
-            else ("fee" if "fee" in valid_df.columns else None)
-        )
+        fee_col = "fees" if "fees" in valid_df.columns else ("fee" if "fee" in valid_df.columns else None)
 
         grouped = valid_df.groupby("mapped_regime")
         for name, group in grouped:
@@ -128,11 +121,7 @@ class SentimentAnalysis:
             avg_pnl = float(pnl_series.mean())
             med_pnl = float(pnl_series.median())
 
-            avg_val = (
-                float(group["trade_value"].mean())
-                if "trade_value" in group.columns
-                else 0.0
-            )
+            avg_val = float(group["trade_value"].mean()) if "trade_value" in group.columns else 0.0
             avg_size = float(group["size"].mean()) if "size" in group.columns else 0.0
 
             # Win/Loss Rate
@@ -143,11 +132,7 @@ class SentimentAnalysis:
             loss_rate = losing_trades / trade_count if trade_count > 0 else 0.0
 
             # Average Fees
-            avg_fees = (
-                float(group[fee_col].mean())
-                if fee_col and not group[fee_col].isna().all()
-                else 0.0
-            )
+            avg_fees = float(group[fee_col].mean()) if fee_col and not group[fee_col].isna().all() else 0.0
 
             metrics = SentimentRegimeMetrics(
                 regime=regime_name,
@@ -164,23 +149,11 @@ class SentimentAnalysis:
             regimes_dict[regime_name] = asdict(metrics)
 
         # Compute dominant, best performing, and worst performing regimes
-        dominant_regime = (
-            max(regimes_dict.keys(), key=lambda k: regimes_dict[k]["trade_count"])
-            if regimes_dict
-            else None
-        )
+        dominant_regime = max(regimes_dict.keys(), key=lambda k: regimes_dict[k]["trade_count"]) if regimes_dict else None
 
         # Best and worst based on average PnL
-        best_regime = (
-            max(regimes_dict.keys(), key=lambda k: regimes_dict[k]["average_pnl"])
-            if regimes_dict
-            else None
-        )
-        worst_regime = (
-            min(regimes_dict.keys(), key=lambda k: regimes_dict[k]["average_pnl"])
-            if regimes_dict
-            else None
-        )
+        best_regime = max(regimes_dict.keys(), key=lambda k: regimes_dict[k]["average_pnl"]) if regimes_dict else None
+        worst_regime = min(regimes_dict.keys(), key=lambda k: regimes_dict[k]["average_pnl"]) if regimes_dict else None
 
         analytics_logger.info("Sentiment analysis completed successfully.")
         return SentimentAnalysisResult(

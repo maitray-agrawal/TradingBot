@@ -27,9 +27,7 @@ class BaseStrategy(ABC):
         self.name = name
 
     @abstractmethod
-    def generate_recommendation(
-        self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None
-    ) -> Dict[str, Any]:
+    def generate_recommendation(self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None) -> Dict[str, Any]:
         """Evaluates market and portfolio metrics to generate a trading recommendation.
 
         Args:
@@ -46,9 +44,7 @@ class BaseStrategy(ABC):
         """
         pass
 
-    def get_latest_sentiment(
-        self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None
-    ) -> float:
+    def get_latest_sentiment(self, df: pd.DataFrame, current_sentiment_val: Optional[float] = None) -> float:
         """Retrieves the latest sentiment score, prioritizing the external value.
 
         Args:
@@ -67,9 +63,7 @@ class BaseStrategy(ABC):
 
         return 50.0
 
-    def calculate_drawdown(
-        self, df: pd.DataFrame, initial_balance: float = 10000.0
-    ) -> Dict[str, float]:
+    def calculate_drawdown(self, df: pd.DataFrame, initial_balance: float = 10000.0) -> Dict[str, float]:
         """Calculates current and maximum drawdown based on cumulative PnL.
 
         Args:

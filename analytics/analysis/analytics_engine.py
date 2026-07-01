@@ -24,8 +24,7 @@ from analytics.analysis.trader_analysis import TraderAnalysis
 from analytics.feature_engineering.generator import FeatureGenerator
 from analytics.preprocessing.merger import DatasetMerger
 from analytics.preprocessing.normalizer import DataNormalizer
-from config.paths import (ANALYTICS_OUTPUT_DIR, DATA_DIR, PROCESSED_DATA_DIR,
-                          RAW_DATA_DIR, UPLOADS_DATA_DIR)
+from config.paths import ANALYTICS_OUTPUT_DIR, DATA_DIR, PROCESSED_DATA_DIR, RAW_DATA_DIR, UPLOADS_DATA_DIR
 from utils.logger import analytics_logger
 
 
@@ -35,9 +34,7 @@ class AnalyticsEngine:
     @classmethod
     def _run_preprocessing_pipeline(cls) -> pd.DataFrame:
         """Private helper to preprocess raw/mock data if processed file does not exist."""
-        analytics_logger.info(
-            "Processed dataset missing. Executing preprocessing pipeline fallback..."
-        )
+        analytics_logger.info("Processed dataset missing. Executing preprocessing pipeline fallback...")
 
         # Resolve paths
         trader_path: Optional[Path] = None
@@ -58,9 +55,7 @@ class AnalyticsEngine:
             fg_path = DATA_DIR / "mock_fear_greed_index.csv"
 
         if not trader_path or not fg_path:
-            raise FileNotFoundError(
-                f"Cannot run preprocessing fallback: raw/mock files missing from {DATA_DIR}."
-            )
+            raise FileNotFoundError(f"Cannot run preprocessing fallback: raw/mock files missing from {DATA_DIR}.")
 
         # 2. Run cleansing
         normalizer = DataNormalizer()
@@ -76,9 +71,7 @@ class AnalyticsEngine:
 
         # 4. Merge datasets
         analytics_logger.info("Merging datasets...")
-        merged_df = DatasetMerger.merge_datasets(
-            featured_trader, fg_clean, strategy="nearest"
-        )
+        merged_df = DatasetMerger.merge_datasets(featured_trader, fg_clean, strategy="nearest")
 
         # 5. Write to processed
         PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -109,11 +102,7 @@ class AnalyticsEngine:
 
         # 1. Load or Preprocess Dataset
         if df is None:
-            p_path = (
-                Path(processed_path)
-                if processed_path
-                else (PROCESSED_DATA_DIR / "processed_data.csv")
-            )
+            p_path = Path(processed_path) if processed_path else (PROCESSED_DATA_DIR / "processed_data.csv")
             if not p_path.exists() or p_path.stat().st_size == 0:
                 df = cls._run_preprocessing_pipeline()
             else:
@@ -200,12 +189,8 @@ class AnalyticsEngine:
         traders_list = results["trader_analysis"]["top_10_traders"]
         coins_list = results["coin_analysis"]["ranked_coins_list"]
 
-        traders_df = pd.DataFrame(traders_list)[
-            ["account_id", "total_pnl", "win_rate", "trade_count"]
-        ]
-        coins_df = pd.DataFrame(coins_list)[
-            ["symbol", "total_pnl", "win_rate", "trade_count"]
-        ]
+        traders_df = pd.DataFrame(traders_list)[["account_id", "total_pnl", "win_rate", "trade_count"]]
+        coins_df = pd.DataFrame(coins_list)[["symbol", "total_pnl", "win_rate", "trade_count"]]
 
         leaderboard_path = ANALYTICS_OUTPUT_DIR / "leaderboards.csv"
         # We save them in a clean stacked CSV or write separate files, stacked is nice:
@@ -219,9 +204,7 @@ class AnalyticsEngine:
         # D. Risk metrics CSV export
         risk_dict = results["risk_analysis"]
         # Filter to remove dict/list components if any, keeping keys
-        flat_risk = {
-            k: v for k, v in risk_dict.items() if not isinstance(v, (dict, list))
-        }
+        flat_risk = {k: v for k, v in risk_dict.items() if not isinstance(v, (dict, list))}
         risk_csv_path = ANALYTICS_OUTPUT_DIR / "risk_metrics.csv"
         pd.DataFrame([flat_risk]).to_csv(risk_csv_path, index=False)
         analytics_logger.info(f"Saved Risk Metrics: {risk_csv_path.name}")

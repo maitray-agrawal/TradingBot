@@ -6,9 +6,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from analytics.ingestion import (DatasetRegistry, DatasetValidator,
-                                 FileScanner, IngestionEngine, SchemaMapper,
-                                 UploadHandler)
+from analytics.ingestion import DatasetRegistry, DatasetValidator, FileScanner, IngestionEngine, SchemaMapper, UploadHandler
 from config.enums import DatasetType
 from utils.exceptions import DatasetError, ValidationError
 
@@ -55,9 +53,7 @@ def mock_fear_greed_df() -> pd.DataFrame:
     )
 
 
-def test_csv_ingestion(
-    tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame
-) -> None:
+def test_csv_ingestion(tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame) -> None:
     """Tests loading a valid CSV trader history dataset."""
     file_path = tmp_path / "trader_history.csv"
     mock_trader_df.to_csv(file_path, index=False)
@@ -74,9 +70,7 @@ def test_csv_ingestion(
     assert dataset.quality_report.quality_score > 80.0
 
 
-def test_excel_ingestion(
-    tmp_path: Path, ingestion_engine: IngestionEngine, mock_fear_greed_df: pd.DataFrame
-) -> None:
+def test_excel_ingestion(tmp_path: Path, ingestion_engine: IngestionEngine, mock_fear_greed_df: pd.DataFrame) -> None:
     """Tests loading a valid Excel sentiment dataset."""
     file_path = tmp_path / "fear_greed.xlsx"
     mock_fear_greed_df.to_excel(file_path, index=False)
@@ -90,9 +84,7 @@ def test_excel_ingestion(
     assert dataset.validation_result.is_valid is True
 
 
-def test_json_ingestion(
-    tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame
-) -> None:
+def test_json_ingestion(tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame) -> None:
     """Tests loading a valid JSON dataset."""
     file_path = tmp_path / "trader.json"
     mock_trader_df.to_json(file_path, orient="records")
@@ -102,9 +94,7 @@ def test_json_ingestion(
     assert dataset.metadata.rows == 2
 
 
-def test_parquet_ingestion(
-    tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame
-) -> None:
+def test_parquet_ingestion(tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame) -> None:
     """Tests loading a valid Parquet dataset."""
     file_path = tmp_path / "trader.parquet"
     mock_trader_df.to_parquet(file_path, index=False)
@@ -114,9 +104,7 @@ def test_parquet_ingestion(
     assert dataset.metadata.rows == 2
 
 
-def test_empty_file_validation(
-    tmp_path: Path, ingestion_engine: IngestionEngine
-) -> None:
+def test_empty_file_validation(tmp_path: Path, ingestion_engine: IngestionEngine) -> None:
     """Tests that empty file structures raise validation exceptions."""
     file_path = tmp_path / "empty.csv"
     # Create empty file
@@ -126,9 +114,7 @@ def test_empty_file_validation(
         ingestion_engine.load_dataset(str(file_path))
 
 
-def test_corrupted_file_validation(
-    tmp_path: Path, ingestion_engine: IngestionEngine
-) -> None:
+def test_corrupted_file_validation(tmp_path: Path, ingestion_engine: IngestionEngine) -> None:
     """Tests that corrupted content structures raise DatasetError exceptions."""
     file_path = tmp_path / "corrupted.json"
     with open(file_path, "w") as f:
@@ -138,9 +124,7 @@ def test_corrupted_file_validation(
         ingestion_engine.load_dataset(str(file_path))
 
 
-def test_unknown_dataset_classification(
-    tmp_path: Path, ingestion_engine: IngestionEngine
-) -> None:
+def test_unknown_dataset_classification(tmp_path: Path, ingestion_engine: IngestionEngine) -> None:
     """Tests that unknown schemas fall back to DatasetType.UNKNOWN."""
     df = pd.DataFrame({"random_col_1": [1, 2], "random_col_2": [3, 4]})
     file_path = tmp_path / "unknown.csv"
@@ -152,9 +136,7 @@ def test_unknown_dataset_classification(
     assert dataset.validation_result.is_valid is True
 
 
-def test_duplicate_columns_validation(
-    tmp_path: Path, ingestion_engine: IngestionEngine
-) -> None:
+def test_duplicate_columns_validation(tmp_path: Path, ingestion_engine: IngestionEngine) -> None:
     """Tests that duplicate column headers cause ingestion validation failures."""
     file_content = "Symbol,Symbol,Side,Size,Timestamp\nBTC,BTC,BUY,0.1,1688212800\n"
     file_path = tmp_path / "duplicate_cols.csv"
@@ -165,9 +147,7 @@ def test_duplicate_columns_validation(
         ingestion_engine.load_dataset(str(file_path))
 
 
-def test_file_scanner(
-    tmp_path: Path, mock_trader_df: pd.DataFrame, mock_fear_greed_df: pd.DataFrame
-) -> None:
+def test_file_scanner(tmp_path: Path, mock_trader_df: pd.DataFrame, mock_fear_greed_df: pd.DataFrame) -> None:
     """Tests directory scans and classification mappings."""
     # Setup test directories
     raw_dir = tmp_path / "raw"
@@ -195,9 +175,7 @@ def test_file_scanner(
     assert discovered[unknown_path] == DatasetType.UNKNOWN
 
 
-def test_upload_handler(
-    tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame
-) -> None:
+def test_upload_handler(tmp_path: Path, ingestion_engine: IngestionEngine, mock_trader_df: pd.DataFrame) -> None:
     """Tests the dashboard upload processing pipeline."""
     # Override standard upload directory path to temp location
     import analytics.ingestion.upload_handler as uh

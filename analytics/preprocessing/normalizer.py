@@ -70,9 +70,7 @@ class DataNormalizer:
                 final_rename[origs[0]] = target
             else:
                 # Resolve conflict by prioritizing specific patterns
-                analytics_logger.warning(
-                    f"Column normalization conflict for '{target}': multiple source columns {origs}"
-                )
+                analytics_logger.warning(f"Column normalization conflict for '{target}': multiple source columns {origs}")
                 prioritized = None
 
                 if target == "symbol":
@@ -101,9 +99,7 @@ class DataNormalizer:
         # Drop duplicate/conflicting source columns
         if cols_to_drop:
             df.drop(columns=cols_to_drop, inplace=True)
-            analytics_logger.info(
-                f"Dropped conflicting source columns to resolve standardization: {cols_to_drop}"
-            )
+            analytics_logger.info(f"Dropped conflicting source columns to resolve standardization: {cols_to_drop}")
 
         df.rename(columns=final_rename, inplace=True)
         analytics_logger.info(f"Normalized columns. Renamed: {final_rename}")
@@ -179,9 +175,7 @@ class DataNormalizer:
         dup_rows_removed = initial_rows - len(df)
 
         # 4. Handle missing values in key columns
-        df.dropna(
-            subset=[col for col in required_cols if col in df.columns], inplace=True
-        )
+        df.dropna(subset=[col for col in required_cols if col in df.columns], inplace=True)
         null_rows_removed = initial_rows - dup_rows_removed - len(df)
 
         # 5. Fix datatypes and convert timestamps
@@ -237,9 +231,7 @@ class DataNormalizer:
         analytics_logger.info(f"Trader Data Cleaning Summary: {cleaning_summary}")
         return df.reset_index(drop=True), cleaning_summary
 
-    def clean_fear_greed_data(
-        self, file_path: Path
-    ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
+    def clean_fear_greed_data(self, file_path: Path) -> Tuple[pd.DataFrame, Dict[str, Any]]:
         """
         Cleans and standardizes Fear & Greed Index data.
         """
@@ -253,18 +245,14 @@ class DataNormalizer:
         required_cols = {"timestamp", "value", "classification"}
         missing_cols = required_cols - set(df.columns)
         if missing_cols:
-            analytics_logger.warning(
-                f"Fear & Greed dataset {file_path.name} is missing columns: {missing_cols}"
-            )
+            analytics_logger.warning(f"Fear & Greed dataset {file_path.name} is missing columns: {missing_cols}")
 
         # 3. Remove duplicates
         df.drop_duplicates(inplace=True)
         dup_rows_removed = initial_rows - len(df)
 
         # 4. Handle missing values
-        df.dropna(
-            subset=[col for col in required_cols if col in df.columns], inplace=True
-        )
+        df.dropna(subset=[col for col in required_cols if col in df.columns], inplace=True)
         null_rows_removed = initial_rows - dup_rows_removed - len(df)
 
         # 5. Fix timestamps and value ranges
@@ -284,9 +272,7 @@ class DataNormalizer:
             df = df[valid_val_mask]
 
         if "classification" in df.columns:
-            df["classification"] = (
-                df["classification"].astype(str).str.strip().str.title()
-            )
+            df["classification"] = df["classification"].astype(str).str.strip().str.title()
 
         final_rows = len(df)
         cleaning_summary = {
@@ -294,10 +280,7 @@ class DataNormalizer:
             "final_rows": final_rows,
             "duplicates_removed": dup_rows_removed,
             "null_rows_removed": null_rows_removed,
-            "invalid_values_removed": initial_rows
-            - dup_rows_removed
-            - null_rows_removed
-            - final_rows,
+            "invalid_values_removed": initial_rows - dup_rows_removed - null_rows_removed - final_rows,
         }
 
         analytics_logger.info(f"Fear & Greed Cleaning Summary: {cleaning_summary}")

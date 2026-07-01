@@ -75,8 +75,7 @@ class DatasetDetector:
         fg_score = len(fg_intersection) / len(self.FEAR_GREED_TARGETS)
 
         logger.debug(
-            f"Schema detection overlap scores -> Trader History: {trader_score:.2%}, "
-            f"Fear & Greed: {fg_score:.2%}"
+            f"Schema detection overlap scores -> Trader History: {trader_score:.2%}, " f"Fear & Greed: {fg_score:.2%}"
         )
 
         # Classify based on highest score exceeding threshold

@@ -94,12 +94,8 @@ def generate_all_static_plots(df: pd.DataFrame) -> Dict[str, Dict[str, str]]:
             if fig is not None:
                 manifest[key] = save_figure(fig, key)
             else:
-                analytics_logger.warning(
-                    f"Plot function for '{key}' returned None. Skipping."
-                )
+                analytics_logger.warning(f"Plot function for '{key}' returned None. Skipping.")
         except Exception as e:
-            analytics_logger.error(
-                f"Failed to generate static plot '{key}': {e}", exc_info=True
-            )
+            analytics_logger.error(f"Failed to generate static plot '{key}': {e}", exc_info=True)
 
     return manifest

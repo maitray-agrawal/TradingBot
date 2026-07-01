@@ -59,12 +59,8 @@ class UploadHandler:
 
         # Now load the dataset using the main engine (which validates, registers, and profiles it)
         try:
-            dataset = self.engine.load_dataset(
-                str(destination_path), dataset_name=clean_filename
-            )
-            logger.info(
-                f"Uploaded file {clean_filename} successfully processed and registered."
-            )
+            dataset = self.engine.load_dataset(str(destination_path), dataset_name=clean_filename)
+            logger.info(f"Uploaded file {clean_filename} successfully processed and registered.")
             return dataset
         except Exception as e:
             # If ingestion/validation fails, clean up the file

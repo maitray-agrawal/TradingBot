@@ -168,7 +168,9 @@ class PrimeTradePDF(FPDF):
             self.cell(width, 7, name, border=1, fill=True, align="L")
         self.ln()
 
-    def draw_table_row(self, row_values: list, col_widths: list, is_profit_col_idx: int = -1, is_loss_col_idx: int = -1) -> None:
+    def draw_table_row(
+        self, row_values: list, col_widths: list, is_profit_col_idx: int = -1, is_loss_col_idx: int = -1
+    ) -> None:
         """Draws a table row with custom highlight values."""
         self.set_fill_color(19, 26, 44)  # #131a2c
         self.set_font("helvetica", "", 8)
@@ -260,9 +262,7 @@ class PDFReportCompiler:
             return str(val)
 
     @classmethod
-    def compile_executive_summary(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> PrimeTradePDF:
+    def compile_executive_summary(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> PrimeTradePDF:
         """Compiles the PDF Executive Summary."""
         pdf = PrimeTradePDF(
             report_title="Executive Performance Summary",
@@ -312,7 +312,11 @@ class PDFReportCompiler:
             ["Average PnL per Trade", cls._format_currency(perf.get("average_pnl", 0)), "Mean trade profitability"],
             ["Portfolio Sharpe Ratio", cls._format_float(perf.get("sharpe_ratio", 0), 2), "Risk-adjusted performance rating"],
             ["Maximum Drawdown", cls._format_pct(risk.get("max_drawdown", 0)), "Peak-to-trough return decline"],
-            ["Composite Risk Score", f"{cls._format_float(risk.get('composite_risk_score', 0), 2)} / 10", "Aggregated risk valuation"],
+            [
+                "Composite Risk Score",
+                f"{cls._format_float(risk.get('composite_risk_score', 0), 2)} / 10",
+                "Aggregated risk valuation",
+            ],
         ]
 
         for kpi in kpis:
@@ -380,9 +384,7 @@ class PDFReportCompiler:
         return pdf
 
     @classmethod
-    def compile_technical_summary(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> PrimeTradePDF:
+    def compile_technical_summary(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> PrimeTradePDF:
         """Compiles the PDF Technical & Statistical Report."""
         pdf = PrimeTradePDF(
             report_title="Technical & Statistical Report",
@@ -404,8 +406,7 @@ class PDFReportCompiler:
 
         pdf.draw_heading("1. Descriptive Parameter Scope")
         pdf.draw_text(
-            "Central tendency, shape, and variance statistics calculated on closed PnL "
-            "and market volatility features."
+            "Central tendency, shape, and variance statistics calculated on closed PnL " "and market volatility features."
         )
 
         pnl_stats = descriptive.get("closed_pnl", {})
@@ -419,7 +420,11 @@ class PDFReportCompiler:
             ["Sample Mean", cls._format_currency(pnl_stats.get("mean")), cls._format_float(vol_stats.get("mean"))],
             ["Standard Deviation", cls._format_float(pnl_stats.get("std")), cls._format_float(vol_stats.get("std"))],
             ["Distribution Skewness", cls._format_float(pnl_stats.get("skew")), cls._format_float(vol_stats.get("skew"))],
-            ["Distribution Kurtosis", cls._format_float(pnl_stats.get("kurtosis")), cls._format_float(vol_stats.get("kurtosis"))],
+            [
+                "Distribution Kurtosis",
+                cls._format_float(pnl_stats.get("kurtosis")),
+                cls._format_float(vol_stats.get("kurtosis")),
+            ],
             ["Minimum Realized Value", cls._format_currency(pnl_stats.get("min")), cls._format_float(vol_stats.get("min"))],
             ["Median (50th Percentile)", cls._format_currency(pnl_stats.get("50%")), cls._format_float(vol_stats.get("50%"))],
             ["Maximum Realized Value", cls._format_currency(pnl_stats.get("max")), cls._format_float(vol_stats.get("max"))],
@@ -508,8 +513,14 @@ class PDFReportCompiler:
         pdf.draw_heading("5. Statistical Effect Sizes")
         cohen = effects.get("cohens_d", {})
         eta = effects.get("eta_squared", {})
-        pdf.draw_bullet(f"{cls._format_float(cohen.get('value'))} ({cohen.get('interpretation', 'N/A')})", label="Cohen's d (Fear vs Greed PnLs)")
-        pdf.draw_bullet(f"{cls._format_float(eta.get('value'))} ({eta.get('interpretation', 'N/A')})", label="Eta-squared (ANOVA Regime Variance)")
+        pdf.draw_bullet(
+            f"{cls._format_float(cohen.get('value'))} ({cohen.get('interpretation', 'N/A')})",
+            label="Cohen's d (Fear vs Greed PnLs)",
+        )
+        pdf.draw_bullet(
+            f"{cls._format_float(eta.get('value'))} ({eta.get('interpretation', 'N/A')})",
+            label="Eta-squared (ANOVA Regime Variance)",
+        )
 
         pdf.draw_heading("6. Mathematical Observations")
         for ob in obs[:6]:  # Limit observations to fit on page
@@ -532,9 +543,7 @@ class PDFReportCompiler:
         return pdf
 
     @classmethod
-    def compile_business_report(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> PrimeTradePDF:
+    def compile_business_report(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> PrimeTradePDF:
         """Compiles the PDF Business Report."""
         pdf = PrimeTradePDF(
             report_title="Portfolio & Business Performance",
@@ -585,11 +594,27 @@ class PDFReportCompiler:
         pdf.draw_table_headers(risk_headers, risk_widths)
 
         risk_rows = [
-            ["Portfolio Volatility (Std PnL)", cls._format_float(risk.get("pnl_volatility", 0), 4), "Realized returns standard deviation"],
+            [
+                "Portfolio Volatility (Std PnL)",
+                cls._format_float(risk.get("pnl_volatility", 0), 4),
+                "Realized returns standard deviation",
+            ],
             ["Maximum Drawdown", cls._format_pct(risk.get("max_drawdown", 0)), "Peak-to-trough decline in returns"],
-            ["Value at Risk (95% VaR)", cls._format_currency(risk.get("value_at_risk_95", 0)), "Estimated maximum loss at 95% confidence"],
-            ["Expected Shortfall (95% ES)", cls._format_currency(risk.get("expected_shortfall_95", 0)), "Average loss in worst 5% tail scenario"],
-            ["Average Win/Loss Size Ratio", cls._format_float(risk.get("profit_loss_ratio", 0), 2), "Average win divided by average loss"],
+            [
+                "Value at Risk (95% VaR)",
+                cls._format_currency(risk.get("value_at_risk_95", 0)),
+                "Estimated maximum loss at 95% confidence",
+            ],
+            [
+                "Expected Shortfall (95% ES)",
+                cls._format_currency(risk.get("expected_shortfall_95", 0)),
+                "Average loss in worst 5% tail scenario",
+            ],
+            [
+                "Average Win/Loss Size Ratio",
+                cls._format_float(risk.get("profit_loss_ratio", 0), 2),
+                "Average win divided by average loss",
+            ],
             ["Composite Risk State", risk.get("risk_classification", "Unknown"), "Overall risk condition rating"],
         ]
 
@@ -614,9 +639,7 @@ class PDFReportCompiler:
 
         coin_pnls = coin.get("coin_pnls", {})
         if coin_pnls:
-            sorted_coins = sorted(
-                coin_pnls.items(), key=lambda item: item[1].get("sum", 0), reverse=True
-            )
+            sorted_coins = sorted(coin_pnls.items(), key=lambda item: item[1].get("sum", 0), reverse=True)
             for symbol, details in sorted_coins[:10]:
                 pnl = details.get("sum", 0)
                 row_vals = [
@@ -679,18 +702,10 @@ class PDFReportCompiler:
         return pdf
 
     @classmethod
-    def compile_all(
-        cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]
-    ) -> Dict[str, PrimeTradePDF]:
+    def compile_all(cls, analytics_res: Dict[str, Any], statistics_res: Dict[str, Any]) -> Dict[str, PrimeTradePDF]:
         """Compiles all three PDF reports and returns them in a dictionary."""
         return {
-            "executive_summary": cls.compile_executive_summary(
-                analytics_res, statistics_res
-            ),
-            "technical_summary": cls.compile_technical_summary(
-                analytics_res, statistics_res
-            ),
-            "business_report": cls.compile_business_report(
-                analytics_res, statistics_res
-            ),
+            "executive_summary": cls.compile_executive_summary(analytics_res, statistics_res),
+            "technical_summary": cls.compile_technical_summary(analytics_res, statistics_res),
+            "business_report": cls.compile_business_report(analytics_res, statistics_res),
         }

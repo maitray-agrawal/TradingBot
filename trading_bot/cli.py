@@ -7,6 +7,7 @@ orders, cancel pending trades, and view order execution histories.
 import json
 import logging
 from pathlib import Path
+
 import typer
 from rich.console import Console
 from rich.panel import Panel
@@ -26,9 +27,7 @@ logger = logging.getLogger("bot")
 
 @bot_cli.command()
 def balance(
-    live: bool = typer.Option(
-        False, "--live", "-l", help="Run against the live Binance Testnet (requires API keys)."
-    ),
+    live: bool = typer.Option(False, "--live", "-l", help="Run against the live Binance Testnet (requires API keys)."),
 ) -> None:
     """Queries account balance, available margin, and list of active positions."""
     try:
@@ -62,7 +61,11 @@ def balance(
         for pos in positions:
             pnl = pos["unrealized_pnl"]
             pnl_str = f"[bold green]+{pnl:.2f} USDT[/bold green]" if pnl >= 0 else f"[bold red]{pnl:.2f} USDT[/bold red]"
-            dir_str = f"[bold green]{pos['direction']}[/bold green]" if pos["direction"] == "LONG" else f"[bold red]{pos['direction']}[/bold red]"
+            dir_str = (
+                f"[bold green]{pos['direction']}[/bold green]"
+                if pos["direction"] == "LONG"
+                else f"[bold red]{pos['direction']}[/bold red]"
+            )
 
             pos_table.add_row(
                 pos["symbol"],
@@ -94,9 +97,7 @@ def order(
     stop_price: float = typer.Option(None, "--stop-price", "-s", help="Trigger stop price (required for STOP_LIMIT)."),
     leverage: int = typer.Option(10, "--leverage", "-v", help="Active leverage factor (1 to 125)."),
     margin: str = typer.Option("CROSS", "--margin", "-m", help="Margin allocation type: CROSS or ISOLATED."),
-    live: bool = typer.Option(
-        False, "--live", "-l", help="Run against the live Binance Testnet (requires API keys)."
-    ),
+    live: bool = typer.Option(False, "--live", "-l", help="Run against the live Binance Testnet (requires API keys)."),
 ) -> None:
     """Submits a futures order for execution after validating risk and parameters."""
     try:
@@ -145,9 +146,7 @@ def order(
 def cancel(
     symbol: str = typer.Argument(..., help="Trading symbol ticker (e.g. BTCUSDT)."),
     order_id: int = typer.Argument(..., help="Exchange Order ID to cancel."),
-    live: bool = typer.Option(
-        False, "--live", "-l", help="Run against the live Binance Testnet (requires API keys)."
-    ),
+    live: bool = typer.Option(False, "--live", "-l", help="Run against the live Binance Testnet (requires API keys)."),
 ) -> None:
     """Cancels a pending limit or stop-limit order."""
     try:

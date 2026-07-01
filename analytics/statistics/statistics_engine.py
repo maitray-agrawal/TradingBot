@@ -32,9 +32,7 @@ class StatisticsEngine:
     @classmethod
     def _run_preprocessing_pipeline(cls) -> pd.DataFrame:
         """Private helper to preprocess raw/mock data if processed file does not exist."""
-        analytics_logger.info(
-            "Processed dataset missing. Executing preprocessing pipeline fallback..."
-        )
+        analytics_logger.info("Processed dataset missing. Executing preprocessing pipeline fallback...")
 
         # Resolve paths
         trader_path: Optional[Path] = None
@@ -55,9 +53,7 @@ class StatisticsEngine:
             fg_path = config.paths.DATA_DIR / "mock_fear_greed_index.csv"
 
         if not trader_path or not fg_path:
-            raise FileNotFoundError(
-                f"Cannot run preprocessing fallback: raw/mock files missing from {config.paths.DATA_DIR}."
-            )
+            raise FileNotFoundError(f"Cannot run preprocessing fallback: raw/mock files missing from {config.paths.DATA_DIR}.")
 
         # Run cleansing
         normalizer = DataNormalizer()
@@ -68,9 +64,7 @@ class StatisticsEngine:
         featured_trader = FeatureGenerator.generate_features(trader_clean)
 
         # Merge datasets
-        merged_df = DatasetMerger.merge_datasets(
-            featured_trader, fg_clean, strategy="nearest"
-        )
+        merged_df = DatasetMerger.merge_datasets(featured_trader, fg_clean, strategy="nearest")
 
         # Save to processed
         config.paths.PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -103,11 +97,7 @@ class StatisticsEngine:
 
         # 1. Load or Preprocess Dataset
         if df is None:
-            p_path = (
-                Path(processed_path)
-                if processed_path
-                else (config.paths.PROCESSED_DATA_DIR / "processed_data.csv")
-            )
+            p_path = Path(processed_path) if processed_path else (config.paths.PROCESSED_DATA_DIR / "processed_data.csv")
             if not p_path.exists() or p_path.stat().st_size == 0:
                 df = cls._run_preprocessing_pipeline()
             else:
@@ -141,29 +131,13 @@ class StatisticsEngine:
 
         if sentiment_col and "closed_pnl" in df.columns:
             # Cohen's d (Fear vs Greed PnL)
-            fear_pnl = (
-                df[df[sentiment_col].isin(["Fear", "Extreme Fear"])]["closed_pnl"]
-                .dropna()
-                .to_numpy()
-            )
-            greed_pnl = (
-                df[df[sentiment_col].isin(["Greed", "Extreme Greed"])]["closed_pnl"]
-                .dropna()
-                .to_numpy()
-            )
+            fear_pnl = df[df[sentiment_col].isin(["Fear", "Extreme Fear"])]["closed_pnl"].dropna().to_numpy()
+            greed_pnl = df[df[sentiment_col].isin(["Greed", "Extreme Greed"])]["closed_pnl"].dropna().to_numpy()
             cohen_val, cohen_label = EffectSize.cohens_d(fear_pnl, greed_pnl)
 
             # Eta-squared (ANOVA regimes)
-            grouped = (
-                df.groupby(sentiment_col)["closed_pnl"]
-                .apply(lambda s: s.dropna().to_numpy())
-                .to_dict()
-            )
-            anova_groups = [
-                arr
-                for name, arr in grouped.items()
-                if name != "Unknown" and len(arr) >= 2
-            ]
+            grouped = df.groupby(sentiment_col)["closed_pnl"].apply(lambda s: s.dropna().to_numpy()).to_dict()
+            anova_groups = [arr for name, arr in grouped.items() if name != "Unknown" and len(arr) >= 2]
             eta_val, eta_label = EffectSize.eta_squared(anova_groups)
 
         effect_sizes = {
@@ -202,9 +176,7 @@ class StatisticsEngine:
     def export_results(cls, results: Dict[str, Any]) -> None:
         """Exports statistical summaries and hypothesis results to output directories."""
         config.paths.ANALYTICS_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        analytics_logger.info(
-            f"Exporting statistical results to: {config.paths.ANALYTICS_OUTPUT_DIR}"
-        )
+        analytics_logger.info(f"Exporting statistical results to: {config.paths.ANALYTICS_OUTPUT_DIR}")
 
         # A. JSON summary export
         json_path = config.paths.ANALYTICS_OUTPUT_DIR / "statistics_summary.json"
@@ -230,29 +202,19 @@ class StatisticsEngine:
             "mean_pnl_ci_upper": pnl_ci.get("upper_bound"),
             "pearson_coef_fg_vs_pnl": pnl_corr.get("pearson", {}).get("coefficient"),
             "pearson_p_fg_vs_pnl": pnl_corr.get("pearson", {}).get("p_value"),
-            "pearson_significant_fg_vs_pnl": pnl_corr.get("pearson", {}).get(
-                "significant"
-            ),
+            "pearson_significant_fg_vs_pnl": pnl_corr.get("pearson", {}).get("significant"),
             "spearman_coef_fg_vs_pnl": pnl_corr.get("spearman", {}).get("coefficient"),
             "spearman_p_fg_vs_pnl": pnl_corr.get("spearman", {}).get("p_value"),
             "t_test_stat": t_test.get("stat"),
             "t_test_p": t_test.get("p_value"),
             "t_test_significant": t_test.get("significant"),
-            "cohens_d": results.get("effect_sizes", {})
-            .get("cohens_d", {})
-            .get("value"),
-            "cohens_d_interpretation": results.get("effect_sizes", {})
-            .get("cohens_d", {})
-            .get("interpretation"),
+            "cohens_d": results.get("effect_sizes", {}).get("cohens_d", {}).get("value"),
+            "cohens_d_interpretation": results.get("effect_sizes", {}).get("cohens_d", {}).get("interpretation"),
             "anova_stat": anova.get("stat"),
             "anova_p": anova.get("p_value"),
             "anova_significant": anova.get("significant"),
-            "eta_squared": results.get("effect_sizes", {})
-            .get("eta_squared", {})
-            .get("value"),
-            "eta_squared_interpretation": results.get("effect_sizes", {})
-            .get("eta_squared", {})
-            .get("interpretation"),
+            "eta_squared": results.get("effect_sizes", {}).get("eta_squared", {}).get("value"),
+            "eta_squared_interpretation": results.get("effect_sizes", {}).get("eta_squared", {}).get("interpretation"),
             "chi_square_stat": chi.get("stat"),
             "chi_square_p": chi.get("p_value"),
             "chi_square_significant": chi.get("significant"),
@@ -274,12 +236,8 @@ class StatisticsEngine:
                 "p_value": t_test.get("p_value"),
                 "is_significant": t_test.get("significant"),
                 "interpretation": t_sig,
-                "effect_size_value": results.get("effect_sizes", {})
-                .get("cohens_d", {})
-                .get("value"),
-                "effect_size_interpretation": results.get("effect_sizes", {})
-                .get("cohens_d", {})
-                .get("interpretation"),
+                "effect_size_value": results.get("effect_sizes", {}).get("cohens_d", {}).get("value"),
+                "effect_size_interpretation": results.get("effect_sizes", {}).get("cohens_d", {}).get("interpretation"),
             }
         )
 
@@ -307,12 +265,8 @@ class StatisticsEngine:
                 "p_value": anova.get("p_value"),
                 "is_significant": anova.get("significant"),
                 "interpretation": anova_sig,
-                "effect_size_value": results.get("effect_sizes", {})
-                .get("eta_squared", {})
-                .get("value"),
-                "effect_size_interpretation": results.get("effect_sizes", {})
-                .get("eta_squared", {})
-                .get("interpretation"),
+                "effect_size_value": results.get("effect_sizes", {}).get("eta_squared", {}).get("value"),
+                "effect_size_interpretation": results.get("effect_sizes", {}).get("eta_squared", {}).get("interpretation"),
             }
         )
 
@@ -331,10 +285,6 @@ class StatisticsEngine:
         )
 
         hypothesis_df = pd.DataFrame(hypothesis_rows)
-        hypothesis_csv_path = (
-            config.paths.ANALYTICS_OUTPUT_DIR / "hypothesis_results.csv"
-        )
+        hypothesis_csv_path = config.paths.ANALYTICS_OUTPUT_DIR / "hypothesis_results.csv"
         hypothesis_df.to_csv(hypothesis_csv_path, index=False)
-        analytics_logger.info(
-            f"Saved hypothesis results CSV: {hypothesis_csv_path.name}"
-        )
+        analytics_logger.info(f"Saved hypothesis results CSV: {hypothesis_csv_path.name}")
