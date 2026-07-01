@@ -12,9 +12,9 @@ from config.paths import (ANALYTICS_DIR, ANALYTICS_OUTPUT_DIR, BOT_LOG_DIR,
                           DASHBOARD_COMPONENTS_DIR, DASHBOARD_DIR,
                           DASHBOARD_PAGES_DIR, DATA_DIR, DOCS_DIR,
                           EXPORTS_DATA_DIR, NOTEBOOKS_DIR, PROCESSED_DATA_DIR,
-                          PROJECT_ROOT, RAW_DATA_DIR, REQUIRED_DIRECTORIES,
-                          SYSTEM_LOG_DIR, TESTS_DIR, UPLOADS_DATA_DIR,
-                          ensure_directories_exist)
+                          PROJECT_ROOT, RAW_DATA_DIR, REPORTS_OUTPUT_DIR,
+                          REQUIRED_DIRECTORIES, SYSTEM_LOG_DIR, TESTS_DIR,
+                          UPLOADS_DATA_DIR, ensure_directories_exist)
 from config.settings import settings
 
 __all__ = [
@@ -30,6 +30,7 @@ __all__ = [
     "ANALYTICS_DIR",
     "ANALYTICS_OUTPUT_DIR",
     "CHARTS_OUTPUT_DIR",
+    "REPORTS_OUTPUT_DIR",
     "NOTEBOOKS_DIR",
     "DASHBOARD_DIR",
     "DASHBOARD_PAGES_DIR",
