@@ -12,7 +12,9 @@ from typing import Any, Dict, Union
 logger = logging.getLogger("system")
 
 
-def load_json_config(file_path: Union[str, Path], default: Dict[str, Any] = None) -> Dict[str, Any]:
+def load_json_config(
+    file_path: Union[str, Path], default: Dict[str, Any] = None
+) -> Dict[str, Any]:
     """Loads a JSON configuration file, falling back to a default dict if missing/invalid.
 
     Args:
@@ -26,17 +28,23 @@ def load_json_config(file_path: Union[str, Path], default: Dict[str, Any] = None
     fallback = default if default is not None else {}
 
     if not path.is_file():
-        logger.warning(f"Config file not found: {file_path}. Using default configuration.")
+        logger.warning(
+            f"Config file not found: {file_path}. Using default configuration."
+        )
         return fallback
 
     try:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except json.JSONDecodeError as e:
-        logger.error(f"Invalid JSON format in {file_path}: {e}. Returning default settings.")
+        logger.error(
+            f"Invalid JSON format in {file_path}: {e}. Returning default settings."
+        )
         return fallback
     except Exception as e:
-        logger.error(f"Failed to load config {file_path}: {e}. Returning default settings.")
+        logger.error(
+            f"Failed to load config {file_path}: {e}. Returning default settings."
+        )
         return fallback
 
 

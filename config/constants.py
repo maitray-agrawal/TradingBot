@@ -1,6 +1,6 @@
 """Centralized constant values for PrimeTrade AI.
 
-This module houses global constants including default trading bounds, API endpoints, 
+This module houses global constants including default trading bounds, API endpoints,
 and display formats to avoid inline magic numbers.
 """
 

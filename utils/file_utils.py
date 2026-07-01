@@ -1,6 +1,6 @@
 """Generic file utility helpers for PrimeTrade AI.
 
-Contains re-usable operations for scanning directories, verifying extensions, 
+Contains re-usable operations for scanning directories, verifying extensions,
 calculating checksums, and checking sizes.
 """
 
@@ -24,7 +24,9 @@ def list_files_by_pattern(directory: Union[str, Path], pattern: str) -> List[Pat
     """
     path = Path(directory)
     if not path.is_dir():
-        logger.warning(f"Target directory {directory} does not exist or is not a folder.")
+        logger.warning(
+            f"Target directory {directory} does not exist or is not a folder."
+        )
         return []
     return list(path.glob(pattern))
 

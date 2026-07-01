@@ -1,6 +1,6 @@
 """Centralized logging system for PrimeTrade AI.
 
-Configures colored console logs alongside size-rotating log files routed based on 
+Configures colored console logs alongside size-rotating log files routed based on
 module context (analytics, bot, system, errors).
 """
 
@@ -92,7 +92,10 @@ def setup_logging(level_name: str = "INFO") -> None:
     # 2. System Log File Handler (Root / system.log)
     system_log_path = SYSTEM_LOG_DIR / "system.log"
     system_handler = RotatingFileHandler(
-        system_log_path, maxBytes=MAX_LOG_SIZE_BYTES, backupCount=BACKUP_COUNT, encoding="utf-8"
+        system_log_path,
+        maxBytes=MAX_LOG_SIZE_BYTES,
+        backupCount=BACKUP_COUNT,
+        encoding="utf-8",
     )
     system_handler.setLevel(logging.DEBUG)  # Keep verbose system file log
     file_formatter = logging.Formatter(FILE_FORMAT)
@@ -102,7 +105,10 @@ def setup_logging(level_name: str = "INFO") -> None:
     # 3. Global Error File Handler (Root / errors.log)
     error_log_path = SYSTEM_LOG_DIR / "errors.log"
     error_handler = RotatingFileHandler(
-        error_log_path, maxBytes=MAX_LOG_SIZE_BYTES, backupCount=BACKUP_COUNT, encoding="utf-8"
+        error_log_path,
+        maxBytes=MAX_LOG_SIZE_BYTES,
+        backupCount=BACKUP_COUNT,
+        encoding="utf-8",
     )
     error_handler.setLevel(logging.ERROR)  # ERROR and CRITICAL only
     error_handler.setFormatter(file_formatter)
@@ -111,11 +117,16 @@ def setup_logging(level_name: str = "INFO") -> None:
     # 4. Analytics Specific Log File Handler
     analytics_logger = logging.getLogger("analytics")
     analytics_logger.setLevel(log_level)
-    analytics_logger.propagate = True  # Propagate to root for system.log, errors.log, and console
+    analytics_logger.propagate = (
+        True  # Propagate to root for system.log, errors.log, and console
+    )
 
     analytics_log_path = SYSTEM_LOG_DIR / "analytics.log"
     analytics_handler = RotatingFileHandler(
-        analytics_log_path, maxBytes=MAX_LOG_SIZE_BYTES, backupCount=BACKUP_COUNT, encoding="utf-8"
+        analytics_log_path,
+        maxBytes=MAX_LOG_SIZE_BYTES,
+        backupCount=BACKUP_COUNT,
+        encoding="utf-8",
     )
     analytics_handler.setLevel(log_level)
     analytics_handler.setFormatter(file_formatter)
@@ -124,11 +135,16 @@ def setup_logging(level_name: str = "INFO") -> None:
     # 5. Trading Bot Specific Log File Handler
     bot_logger = logging.getLogger("bot")
     bot_logger.setLevel(log_level)
-    bot_logger.propagate = True  # Propagate to root for system.log, errors.log, and console
+    bot_logger.propagate = (
+        True  # Propagate to root for system.log, errors.log, and console
+    )
 
     bot_log_path = BOT_LOG_DIR / "bot.log"
     bot_handler = RotatingFileHandler(
-        bot_log_path, maxBytes=MAX_LOG_SIZE_BYTES, backupCount=BACKUP_COUNT, encoding="utf-8"
+        bot_log_path,
+        maxBytes=MAX_LOG_SIZE_BYTES,
+        backupCount=BACKUP_COUNT,
+        encoding="utf-8",
     )
     bot_handler.setLevel(log_level)
     bot_handler.setFormatter(file_formatter)

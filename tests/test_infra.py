@@ -1,6 +1,7 @@
 """Unit tests for the PrimeTrade AI infrastructure (Phase 1)."""
 
 from datetime import datetime
+
 import pandas as pd
 import pytest
 
@@ -27,9 +28,16 @@ def test_settings_loaded() -> None:
 
 def test_clean_column_names() -> None:
     """Verifies formatting logic of header cleaners."""
-    df = pd.DataFrame(columns=["Closed PnL ($)", "Coin/Symbol", "QTY-1", "  spaced_col  "])
+    df = pd.DataFrame(
+        columns=["Closed PnL ($)", "Coin/Symbol", "QTY-1", "  spaced_col  "]
+    )
     cleaned_df = clean_column_names(df)
-    assert list(cleaned_df.columns) == ["closed_pnl", "coinsymbol", "qty_1", "spaced_col"]
+    assert list(cleaned_df.columns) == [
+        "closed_pnl",
+        "coinsymbol",
+        "qty_1",
+        "spaced_col",
+    ]
 
 
 def test_parse_timestamp_to_datetime() -> None:

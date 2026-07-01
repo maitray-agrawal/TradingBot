@@ -6,6 +6,7 @@ Pydantic schemas, raising validation errors for incorrect types or configuration
 
 import os
 from typing import Any, Dict
+
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
 
@@ -50,7 +51,9 @@ class SystemSettings(BaseModel):
         allowed_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
         upper_val = val.upper()
         if upper_val not in allowed_levels:
-            raise ValueError(f"Invalid LOG_LEVEL '{val}'. Must be one of {allowed_levels}")
+            raise ValueError(
+                f"Invalid LOG_LEVEL '{val}'. Must be one of {allowed_levels}"
+            )
         return upper_val
 
     @field_validator("testnet_url")
@@ -58,7 +61,9 @@ class SystemSettings(BaseModel):
     def validate_testnet_url(cls, val: str) -> str:
         """Validates that the testnet URL has a valid scheme."""
         if not (val.startswith("http://") or val.startswith("https://")):
-            raise ValueError(f"Invalid TESTNET_URL '{val}'. Must start with http:// or https://")
+            raise ValueError(
+                f"Invalid TESTNET_URL '{val}'. Must start with http:// or https://"
+            )
         return val
 
 

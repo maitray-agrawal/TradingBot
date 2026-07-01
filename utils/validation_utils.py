@@ -8,7 +8,10 @@ from typing import Any, Union
 
 
 def validate_in_range(
-    value: Union[int, float], min_val: Union[int, float], max_val: Union[int, float], name: str = "Value"
+    value: Union[int, float],
+    min_val: Union[int, float],
+    max_val: Union[int, float],
+    name: str = "Value",
 ) -> None:
     """Validates that a numeric value falls within a specific range.
 

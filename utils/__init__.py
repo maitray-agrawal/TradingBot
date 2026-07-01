@@ -7,8 +7,8 @@ from utils.dataframe_utils import (
     get_missing_value_report,
 )
 from utils.exceptions import (
-    APIError,
     AnalyticsError,
+    APIError,
     ConfigurationError,
     DatasetError,
     NetworkError,

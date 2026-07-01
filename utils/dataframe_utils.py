@@ -1,10 +1,11 @@
 """Generic DataFrame utility helpers for PrimeTrade AI.
 
-Contains operations for column cleaning, missing value profiling, and outlier 
+Contains operations for column cleaning, missing value profiling, and outlier
 detection based on interquartile ranges.
 """
 
 from typing import Dict, List, Union
+
 import numpy as np
 import pandas as pd
 
@@ -37,7 +38,9 @@ def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
     return df_copy
 
 
-def get_missing_value_report(df: pd.DataFrame) -> Dict[str, Dict[str, Union[int, float]]]:
+def get_missing_value_report(
+    df: pd.DataFrame,
+) -> Dict[str, Dict[str, Union[int, float]]]:
     """Generates a summary of missing values in each column of the DataFrame.
 
     Args:

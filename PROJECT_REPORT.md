@@ -335,25 +335,36 @@ Structured log output is managed via the standard logging module, routed to file
 ### Completed Tasks
 - [x] Project Planning
 - [x] Architecture Planning
-- [x] Folder Planning
+- [x] Folder Scaffolding
+- [x] Centralized Configuration Package (`config/settings.py`, `config/paths.py`, `config/constants.py`, `config/enums.py`)
+- [x] Rotating & Colored Logging System (`utils/logger.py` routing to system, bot, analytics, and errors logs)
+- [x] Centralized Exceptions Framework (`utils/exceptions.py`)
+- [x] Generic Utilities Libraries (file, time, DataFrame, validation, and config helpers)
+- [x] Project Scaffolding Configurations (`requirements.txt`, `.gitignore`, `.env.example`, `.env`, `README.md`)
+- [x] CI Pipeline Configuration (`.github/workflows/ci.yml`)
+- [x] Entry Point Verification Sequence (`main.py`)
+- [x] Unit Testing Suite (`tests/test_infra.py`)
 
 ### Pending Tasks
-- [ ] Ingest data files dynamically
-- [ ] Normalize and clean headers
-- [ ] Build feature engineering modules
-- [ ] Implement dataset merging logic
-- [ ] Establish statistical analysis engine
-- [ ] Create Plotly and static charts
-- [ ] Write report compilation logic
-- [ ] Code strategy recommendation engine
-- [ ] Develop Binance Futures Testnet trading client
-- [ ] Implement order executors and risk checks
-- [ ] Create Streamlit dashboard pages
-- [ ] Build unit testing suite
+- [ ] Ingest data files dynamically (Phase 2)
+- [ ] Normalize and clean headers (Phase 3)
+- [ ] Build feature engineering modules (Phase 4)
+- [ ] Implement dataset merging logic (Phase 4)
+- [ ] Establish statistical analysis engine (Phase 5 & 6)
+- [ ] Create Plotly and static charts (Phase 7)
+- [ ] Write report compilation logic (Phase 8)
+- [ ] Code strategy recommendation engine (Phase 9)
+- [ ] Develop Binance Futures Testnet trading client (Phase 10)
+- [ ] Implement order executors and risk checks (Phase 10)
+- [ ] Create Streamlit dashboard pages (Phase 11)
 
 ---
 
 ## Version History
+
+### Version 0.2.0 (2026-07-01)
+- **Status**: Infrastructure & Scaffold Completed.
+- **Details**: Established folders, configuration settings, rotating file loggers, exception classes, generic utilities, pytest configurations, black/isort formatters, and the verified application entry point.
 
 ### Version 0.1.0 (2026-07-01)
 - **Status**: Architecture Initialized.
@@ -364,9 +375,11 @@ Structured log output is managed via the standard logging module, routed to file
 ## Developer Notes
 - Ensure Pydantic v2 patterns are maintained when referencing schemas.
 - Ensure all datetimes are timezone-naive (`datetime64[ns]`) before running pandas merge functions.
+- Run `py main.py` to diagnose directory structures and print config settings.
 
 ---
 
 ## AI Continuation Notes
 - To continue the project, refer to the next roadmap item: **Phase 2: Data Ingestion**.
-- Raw files must be located or uploaded to the `/data` directory. The detector in `analytics/ingestion/detector.py` should be used to scan files.
+- Ingestion files will go under `analytics/ingestion/`. You should create a detector there that scans the target folders and automatically classifies raw datasets.
+

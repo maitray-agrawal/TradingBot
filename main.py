@@ -6,6 +6,7 @@ and displays a project confirmation banner.
 
 import logging
 from pathlib import Path
+
 from rich.console import Console
 from rich.panel import Panel
 

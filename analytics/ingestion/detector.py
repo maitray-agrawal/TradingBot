@@ -1,29 +1,47 @@
 import os
 from enum import Enum
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
+
 import pandas as pd
+
 from config.settings import settings
 from utils.logger import analytics_logger, system_logger
+
 
 class DatasetType(str, Enum):
     FEAR_GREED = "fear_greed"
     TRADER_DATA = "trader_data"
     UNKNOWN = "unknown"
 
+
 class DatasetDetector:
     """
     Scans the data directory and detects CSV, XLSX, JSON, and Parquet datasets.
     Automatically classifies datasets as either Fear & Greed Index or Historical Trader Data.
     """
-    
+
     # Target columns normalized (lowercased, spaces/underscores removed)
     FEAR_GREED_TARGETS = {"classification", "value", "date", "timestamp"}
-    TRADER_DATA_TARGETS = {"account", "coin", "symbol", "price", "executionprice", "closedpnl", "profit", "pnl", "side", "size", "timestamp"}
+    TRADER_DATA_TARGETS = {
+        "account",
+        "coin",
+        "symbol",
+        "price",
+        "executionprice",
+        "closedpnl",
+        "profit",
+        "pnl",
+        "side",
+        "size",
+        "timestamp",
+    }
 
     def __init__(self, data_dir: Optional[Path] = None):
         self.data_dir = data_dir or settings.DATA_DIR
-        analytics_logger.info(f"DatasetDetector initialized targeting directory: {self.data_dir}")
+        analytics_logger.info(
+            f"DatasetDetector initialized targeting directory: {self.data_dir}"
+        )
 
     @staticmethod
     def normalize_header(header: str) -> str:
@@ -35,7 +53,7 @@ class DatasetDetector:
         if not self.data_dir.exists():
             analytics_logger.warning(f"Data directory {self.data_dir} does not exist.")
             return []
-            
+
         extensions = {".csv", ".xlsx", ".json", ".parquet"}
         files = []
         for file in self.data_dir.iterdir():
@@ -80,8 +98,16 @@ class DatasetDetector:
         fg_matches = normalized_headers.intersection(self.FEAR_GREED_TARGETS)
         trader_matches = normalized_headers.intersection(self.TRADER_DATA_TARGETS)
 
-        fg_score = len(fg_matches) / len(self.FEAR_GREED_TARGETS) if self.FEAR_GREED_TARGETS else 0.0
-        trader_score = len(trader_matches) / len(self.TRADER_DATA_TARGETS) if self.TRADER_DATA_TARGETS else 0.0
+        fg_score = (
+            len(fg_matches) / len(self.FEAR_GREED_TARGETS)
+            if self.FEAR_GREED_TARGETS
+            else 0.0
+        )
+        trader_score = (
+            len(trader_matches) / len(self.TRADER_DATA_TARGETS)
+            if self.TRADER_DATA_TARGETS
+            else 0.0
+        )
 
         analytics_logger.debug(
             f"File: {file_path.name} | FG overlap: {len(fg_matches)} (Score: {fg_score:.2f}) | "
@@ -93,7 +119,7 @@ class DatasetDetector:
             return DatasetType.FEAR_GREED, fg_score
         elif trader_score > fg_score and trader_score >= threshold:
             return DatasetType.TRADER_DATA, trader_score
-        
+
         return DatasetType.UNKNOWN, 0.0
 
     def detect_all_datasets(self) -> Dict[DatasetType, List[Dict[str, Any]]]:
@@ -104,7 +130,7 @@ class DatasetDetector:
         results = {
             DatasetType.FEAR_GREED: [],
             DatasetType.TRADER_DATA: [],
-            DatasetType.UNKNOWN: []
+            DatasetType.UNKNOWN: [],
         }
 
         for file_path in files:
@@ -113,7 +139,7 @@ class DatasetDetector:
                 "path": file_path,
                 "name": file_path.name,
                 "format": file_path.suffix[1:].upper(),
-                "score": score
+                "score": score,
             }
             results[dtype].append(file_info)
 
@@ -123,27 +149,35 @@ class DatasetDetector:
         )
         return results
 
-    def select_dataset_cli(self, dataset_type: DatasetType, candidates: List[Dict[str, Any]]) -> Optional[Path]:
+    def select_dataset_cli(
+        self, dataset_type: DatasetType, candidates: List[Dict[str, Any]]
+    ) -> Optional[Path]:
         """
         Prompts user via CLI menu to select from multiple candidates for a dataset type.
         """
         if not candidates:
             return None
         if len(candidates) == 1:
-            analytics_logger.info(f"Auto-selected single candidate for {dataset_type.value}: {candidates[0]['name']}")
+            analytics_logger.info(
+                f"Auto-selected single candidate for {dataset_type.value}: {candidates[0]['name']}"
+            )
             return candidates[0]["path"]
 
         print(f"\nMultiple candidates found for {dataset_type.value.upper()}:")
         for i, cand in enumerate(candidates):
-            print(f"  [{i+1}] {cand['name']} (Format: {cand['format']}, Score: {cand['score']:.2f})")
-        
+            print(
+                f"  [{i+1}] {cand['name']} (Format: {cand['format']}, Score: {cand['score']:.2f})"
+            )
+
         while True:
             try:
                 choice = input(f"Select dataset [1-{len(candidates)}]: ").strip()
                 idx = int(choice) - 1
                 if 0 <= idx < len(candidates):
                     selected = candidates[idx]["path"]
-                    analytics_logger.info(f"User selected {dataset_type.value}: {selected.name}")
+                    analytics_logger.info(
+                        f"User selected {dataset_type.value}: {selected.name}"
+                    )
                     return selected
                 else:
                     print("Invalid option. Please try again.")

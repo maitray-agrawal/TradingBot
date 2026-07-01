@@ -47,7 +47,9 @@ class NetworkError(ProjectError):
 class APIError(TradingBotError):
     """Raised when external exchange APIs return error codes or bad responses."""
 
-    def __init__(self, message: str, status_code: int | None = None, details: dict | None = None) -> None:
+    def __init__(
+        self, message: str, status_code: int | None = None, details: dict | None = None
+    ) -> None:
         """Initializes the API error.
 
         Args:

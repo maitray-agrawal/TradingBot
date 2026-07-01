@@ -1,6 +1,6 @@
 """System-wide enumerations for PrimeTrade AI.
 
-This module provides Type-hinted Enumerations for standardizing variables across the 
+This module provides Type-hinted Enumerations for standardizing variables across the
 analytics, strategy, dashboard, and trading bot systems.
 """
 
