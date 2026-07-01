@@ -1,0 +1,63 @@
+[tool.black]
+line-length = 127
+target-version = ["py310", "py311", "py312"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | build
+  | dist
+  | htmlcov
+  | dashboard
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 127
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+known_first_party = ["analytics", "trading_bot", "config", "utils", "dashboard"]
+known_third_party = ["pandas", "numpy", "scipy", "plotly", "streamlit", "pydantic", "typer", "rich", "binance"]
+skip_glob = ["*/venv/*", "*/.venv/*", "*/htmlcov/*", "dashboard/*"]
+
+[tool.pytest.ini_options]
+# Duplicate of pytest.ini for tools that prefer pyproject.toml
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["analytics", "trading_bot", "config", "utils"]
+omit = ["*/venv/*", "*/__pycache__/*", "*/tests/*", "dashboard/*"]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "primetrade-ai"
+version = "1.0.0"
+description = "Sentiment-Driven Crypto Trading Analytics & Binance Futures Testnet Bot"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["crypto", "trading", "analytics", "binance", "sentiment", "fear-greed"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]

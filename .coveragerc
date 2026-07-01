@@ -1,0 +1,38 @@
+[run]
+source =
+    analytics
+    trading_bot
+    config
+    utils
+
+omit =
+    */venv/*
+    */virtualenv/*
+    */__pycache__/*
+    */migrations/*
+    */tests/*
+    */conftest.py
+    setup.py
+    main.py
+    dashboard/*
+
+[report]
+fail_under = 70
+show_missing = true
+skip_covered = false
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    def __str__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+    \.\.\.$
+    if TYPE_CHECKING:
+
+[html]
+directory = htmlcov
+title = PrimeTrade AI Coverage Report
+
+[xml]
+output = coverage.xml

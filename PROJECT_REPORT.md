@@ -68,11 +68,13 @@ graph TD
 - **Statistical Analysis**: SciPy, Statsmodels
 - **Data Visualization**: Plotly, Matplotlib, Seaborn
 - **API Client**: `python-binance` (Binance Futures Testnet API)
-- **Configuration & Validation**: Pydantic, Python-dotenv
+- **Configuration & Validation**: Pydantic v2, Python-dotenv
 - **Structured Logging**: Standard Python Logging library with multi-file routing
 - **Dashboard Interface**: Streamlit
-- **Report Generation**: Jinja2 (HTML), FPDF2 (PDF)
-- **Testing Framework**: Pytest
+- **Report Generation**: FPDF2 (PDF), custom HTML templates
+- **Testing Framework**: Pytest, pytest-cov, coverage
+- **Code Quality**: black, isort, flake8, pre-commit
+- **Containerization**: Docker, Docker Compose
 
 ---
 
@@ -356,13 +358,21 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] Develop Binance Futures Testnet trading client (Phase 10)
 - [x] Implement order executors and risk checks (Phase 10)
 - [x] Create Streamlit dashboard pages (Phase 11)
+- [x] Testing & QA — Phase 12: `conftest.py` shared fixtures, `pytest.ini`, `.coveragerc`, integration test suite (pipeline + bot dry-run lifecycle), pre-commit hooks (`.pre-commit-config.yaml`)
+- [x] Docker & Deployment — Phase 13: Multi-stage `Dockerfile` (builder + runtime, non-root user), `docker-compose.yml` (dashboard + analytics + bot services), `.dockerignore`
+- [x] Documentation — Phase 14: `docs/ARCHITECTURE.md` (4 Mermaid diagrams), `docs/API_REFERENCE.md` (full engine/CLI/error reference), `RELEASE_NOTES.md`, `README.md` full rewrite with badges, `pyproject.toml`, `.flake8`
+- [x] Git Release Tag: `v1.0.0`
 
 ### Pending Tasks
-*All core development phases completed.*
+*All 14 development phases completed. Project released as v1.0.0.*
 
 ---
 
 ## Version History
+
+### Version 1.2.0 (2026-07-01)
+- **Status**: Production Release — All 14 Phases Complete.
+- **Details**: Completed the full production finalization of PrimeTrade AI. Delivered Phase 12 (Testing & QA): `conftest.py` shared fixtures, `pytest.ini`, `.coveragerc`, integration test suite for end-to-end pipeline and bot dry-run lifecycle, and pre-commit hooks (`black`, `isort`, `flake8`, `bandit`). Delivered Phase 13 (Docker): multi-stage `Dockerfile` with non-root user, `docker-compose.yml` with 3 services (dashboard, analytics, bot), and `.dockerignore`. Delivered Phase 14 (Documentation): full `docs/ARCHITECTURE.md` with 4 Mermaid system diagrams, `docs/API_REFERENCE.md` with complete engine/CLI/error API coverage, `RELEASE_NOTES.md` with comprehensive changelog, and a full `README.md` rewrite with CI badges, Docker quickstart, and complete roadmap. Expanded CI/CD pipeline to 5 jobs (lint, unit test matrix, integration, docker, release). Tagged as `v1.0.0`.
 
 ### Version 1.1.0 (2026-07-01)
 - **Status**: Streamlit Dashboard Completed.

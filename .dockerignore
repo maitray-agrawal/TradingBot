@@ -1,0 +1,78 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .dockerignore — PrimeTrade AI
+# Excludes unnecessary files from the Docker build context.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Version control
+.git
+.gitignore
+.github
+
+# Python runtime artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+.env.local
+
+# Test & coverage outputs
+tests/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+.pytest_cache/
+.mypy_cache/
+
+# Development configuration files (keep .env.example but not .env)
+.env
+pyproject.toml
+.flake8
+.pre-commit-config.yaml
+pytest.ini
+.coveragerc
+
+# Raw large datasets (mounted via volume at runtime)
+data/raw/
+historical_data.csv
+fear_greed_index.csv
+
+# Jupyter notebooks
+analytics/notebooks/
+*.ipynb
+.ipynb_checkpoints/
+
+# IDE & OS artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Documentation source (not needed at runtime)
+docs/
+
+# Log files (mounted via volume)
+logs/
+trading_bot/logs/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Node (if any frontend tooling is ever added)
+node_modules/
+npm-debug.log*

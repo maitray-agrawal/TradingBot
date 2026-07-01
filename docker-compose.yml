@@ -1,0 +1,103 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# PrimeTrade AI — Docker Compose
+# ─────────────────────────────────────────────────────────────────────────────
+# Services:
+#   dashboard  — Streamlit UI served on http://localhost:8501
+#   analytics  — One-shot analytics pipeline runner (exits after completion)
+#   bot        — Trading bot CLI (dry-run by default, interactive)
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Streamlit Dashboard ────────────────────────────────────────────────────
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: primetrade-ai:1.0.0
+    container_name: primetrade_dashboard
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    volumes:
+      # Persist uploaded data and processed outputs across restarts
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./analytics/outputs:/app/analytics/outputs
+      - ./analytics/reports/generated:/app/analytics/reports/generated
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - primetrade_net
+
+  # ── Analytics Pipeline Runner ──────────────────────────────────────────────
+  analytics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: primetrade-ai:1.0.0
+    container_name: primetrade_analytics
+    restart: "no"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./analytics/outputs:/app/analytics/outputs
+      - ./analytics/reports/generated:/app/analytics/reports/generated
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    # Override CMD to run the analytics pipeline directly
+    command: ["python", "main.py", "--mode=analytics"]
+    networks:
+      - primetrade_net
+    profiles:
+      - analytics
+
+  # ── Trading Bot CLI ────────────────────────────────────────────────────────
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: primetrade-ai:1.0.0
+    container_name: primetrade_bot
+    restart: "no"
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./trading_bot/logs:/app/trading_bot/logs
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - DRY_RUN=true
+    # Override CMD to run the Typer CLI entrypoint
+    command: ["python", "-m", "trading_bot.cli", "--help"]
+    networks:
+      - primetrade_net
+    profiles:
+      - bot
+
+networks:
+  primetrade_net:
+    driver: bridge
+    name: primetrade_network
+
+volumes:
+  primetrade_data:
+    name: primetrade_data
