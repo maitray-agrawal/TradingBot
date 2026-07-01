@@ -225,6 +225,7 @@ def test_risk_manager_position_size_limit() -> None:
     # Max ratio is 10%. Max position value allowed is 100 USDT.
     config = RiskConfig(max_position_size_ratio=0.10)
     risk_m = RiskManager(config=config)
+    risk_m._get_historical_peak = lambda balance: balance
 
     # 1. Long 0.001 BTC at 60,000 USDT = 60 USDT value (ok)
     order_ok = FuturesOrder(
