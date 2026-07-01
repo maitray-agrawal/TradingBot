@@ -6,6 +6,7 @@ vs weekends, quarterly cycles, and global trading sessions (Asia, Europe, Americ
 
 from dataclasses import dataclass
 from typing import Dict, List, Optional
+from typing import Any, Dict
 
 import pandas as pd
 

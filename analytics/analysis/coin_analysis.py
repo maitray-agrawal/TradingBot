@@ -5,7 +5,7 @@ drawdowns, custom risk scores, and performance rankings for each traded coin.
 """
 
 from dataclasses import asdict, dataclass
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
