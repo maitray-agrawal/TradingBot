@@ -353,15 +353,19 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] Charting & Visualization Engine (Phase 7 - Static matplotlib plots, interactive plotly plots, and unified dashboard assembly)
 - [x] Write report compilation logic (Phase 8 - Compiled high-fidelity Executive Summary, Technical Report, and Business Report in Markdown, HTML, and PDF)
 - [x] Code strategy recommendation engine (Phase 9 - Configurable RuleBasedStrategy and orchestration StrategyEngine supporting BUY, SELL, HOLD, REDUCE_LEVERAGE, and INCREASE_POSITION_SIZE recommendations with export features)
+- [x] Develop Binance Futures Testnet trading client (Phase 10)
+- [x] Implement order executors and risk checks (Phase 10)
 
 ### Pending Tasks
-- [ ] Develop Binance Futures Testnet trading client (Phase 10)
-- [ ] Implement order executors and risk checks (Phase 10)
 - [ ] Create Streamlit dashboard pages (Phase 11)
 
 ---
 
 ## Version History
+
+### Version 1.0.0 (2026-07-01)
+- **Status**: Binance Futures Testnet Trading Bot Completed.
+- **Details**: Built the complete production-grade Binance Futures Testnet trading bot. Developed client wrapper with retry decorators supporting exponential backoff (for rate limit HTTP 429/418 and server HTTP 5xx errors) and structured request-response logging. Defined Pydantic order schemas for MARKET, LIMIT, and STOP_LIMIT orders. Built an OrderValidator executing leverage limits, min notional constraints, tick size precision, and initial margin checks. Implemented RiskManager monitoring drawdowns (15%), capital-at-risk (50%), and single-trade sizing limits (10%). Completed OrderManager orchestration, writing transaction logs to JSON/CSV, and displaying details via Typer-based CLI. Verified all logic with robust unit tests in `tests/test_bot.py`.
 
 ### Version 0.9.0 (2026-07-01)
 - **Status**: Strategy Recommendation Engine Completed.

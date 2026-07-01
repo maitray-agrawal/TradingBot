@@ -1,26 +1,37 @@
 """Entry point runner for PrimeTrade AI.
 
 Verifies folder structure, validates configurations, initializes logging,
-and runs data ingestion engine diagnostics with rich visual outputs.
+runs data ingestion engine diagnostics with rich visual outputs, and integrates
+the Binance Futures Testnet Trading Bot CLI.
 """
 
 import logging
 import os
 from pathlib import Path
-
 import pandas as pd
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+import typer
 
 from analytics.ingestion import FileScanner, IngestionEngine
 # Config & Utils imports
 from config import ensure_directories_exist, settings
 from config.enums import DatasetType
 from utils import setup_logging
+from trading_bot.cli import bot_cli
 
 logger = logging.getLogger("system")
 console = Console()
+
+# Instantiate the main Typer application
+app = typer.Typer(
+    name="primetrade-ai",
+    help="PrimeTrade AI: Sentiment-Driven Crypto Trading Analytics & Binance Futures Testnet Trading Bot.",
+)
+
+# Register the trading bot sub-commands
+app.add_typer(bot_cli, name="bot")
 
 
 def print_banner() -> None:
@@ -33,7 +44,7 @@ def print_banner() -> None:
         "[bold purple]#        #    #  #  #     #  ######    #     #    #  #   #  ######  ######[/bold purple]\n"
         "\n"
         "[bold white]    Sentiment-Driven Crypto Trading Analytics & Binance Futures Bot[/bold white]\n"
-        "[bold green]                        PHASE 2 - INGESTION ENGINE[/bold green]"
+        "[bold green]                        SYSTEM INITIALIZATION RUN[/bold green]"
     )
     console.print(
         Panel(
@@ -60,6 +71,10 @@ def create_demo_files_if_empty() -> None:
     """Generates sample datasets in the data folders if no files exist."""
     raw_dir = Path(settings.data_directory) / "raw"
     uploads_dir = Path(settings.data_directory) / "uploads"
+
+    # Ensure directories exist
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    uploads_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Mock Trader History CSV
     trader_path = raw_dir / "binance_futures_trades.csv"
@@ -199,8 +214,8 @@ def run_ingestion_diagnostics() -> None:
             logger.error(f"Failed to ingest file {path_str}: {e}")
 
 
-def main() -> None:
-    """Main verification sequence for the system infrastructure."""
+def run_diagnostics_flow() -> None:
+    """Executes the standard project initialization and diagnostics sequence."""
     # 1. Initialize folders
     ensure_directories_exist()
 
@@ -222,7 +237,7 @@ def main() -> None:
 
     if not settings.binance_api_key or not settings.binance_secret_key:
         logger.warning(
-            "Binance keys are missing. Testnet trading bot features will be locked."
+            "Binance keys are missing. Testnet trading bot features will be locked in live mode."
         )
     else:
         logger.info("Binance Futures credentials found and validated.")
@@ -233,9 +248,16 @@ def main() -> None:
     # Confirmation statement
     console.print(
         "\n[bold green][OK][/bold green] [bold white]PrimeTrade AI project initialized successfully![/bold white]\n"
-        "[yellow]Note: Analytical models, statistical tests, and trading routines are currently offline.[/yellow]\n"
+        "[yellow]Note: Bot operations are online via CLI. Type 'python main.py bot --help' to explore bot controls.[/yellow]\n"
     )
 
 
+@app.callback(invoke_without_command=True)
+def main_callback(ctx: typer.Context) -> None:
+    """Runs data ingestion diagnostics if no subcommand is executed."""
+    if ctx.invoked_subcommand is None:
+        run_diagnostics_flow()
+
+
 if __name__ == "__main__":
-    main()
+    app()
