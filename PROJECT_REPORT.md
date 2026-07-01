@@ -352,9 +352,9 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] Statistical Analysis Engine (Phase 6 - Classical significance testing: descriptive stats, multi-method correlation, Independent T-Test, Mann-Whitney U, ANOVA, Chi-Square, distribution/normality tests, confidence intervals, effect sizes, and natural language formatting)
 - [x] Charting & Visualization Engine (Phase 7 - Static matplotlib plots, interactive plotly plots, and unified dashboard assembly)
 - [x] Write report compilation logic (Phase 8 - Compiled high-fidelity Executive Summary, Technical Report, and Business Report in Markdown, HTML, and PDF)
+- [x] Code strategy recommendation engine (Phase 9 - Configurable RuleBasedStrategy and orchestration StrategyEngine supporting BUY, SELL, HOLD, REDUCE_LEVERAGE, and INCREASE_POSITION_SIZE recommendations with export features)
 
 ### Pending Tasks
-- [ ] Code strategy recommendation engine (Phase 9)
 - [ ] Develop Binance Futures Testnet trading client (Phase 10)
 - [ ] Implement order executors and risk checks (Phase 10)
 - [ ] Create Streamlit dashboard pages (Phase 11)
@@ -362,6 +362,10 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## Version History
+
+### Version 0.9.0 (2026-07-01)
+- **Status**: Strategy Recommendation Engine Completed.
+- **Details**: Built the core Strategy Recommendation Engine under `analytics/strategy/`. Defined the custom `StrategyAction` enum and configured pathways for recommendations output (`analytics/outputs/strategy/`). Implemented a configurable, Pydantic-backed `RuleBasedStrategy` that evaluates trailing market win rate, max drawdown, trade frequency, and Fear & Greed sentiment to generate BUY, SELL, HOLD, REDUCE_LEVERAGE, and INCREASE_POSITION_SIZE recommendations with confidence scores and descriptive, natural-language explanations. Structured the master `StrategyEngine` to run strategy analysis and export reports to JSON, CSV, and Markdown formats. Validated all logic with unit tests in `tests/test_strategy.py`.
 
 ### Version 0.8.0 (2026-07-01)
 - **Status**: Report Compilers (HTML/PDF/Markdown) Completed.
@@ -398,14 +402,14 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## Developer Notes
-- Ensure Pydantic v2 patterns are maintained when referencing schemas.
+- Enforce Pydantic v2 patterns across models.
 - Ensure all datetimes are timezone-naive (`datetime64[ns]`) before running pandas merge functions.
 - Run `py main.py` to diagnose directory structures and print config settings.
 
 ---
 
 ## AI Continuation Notes
-- To continue the project, refer to the next roadmap item: **Phase 9: Strategy Recommendation Engine**.
-- Develop a rule-based strategy engine that consumes processed historical metrics, volatility, and Fear & Greed sentiment to issue trading recommendations.
+- To continue the project, refer to the next roadmap item: **Phase 10: Binance Futures Testnet Trading Bot**.
+- Develop a secure Binance Futures Testnet trading bot using `python-binance` with modular order execution, leverage management, and pre-trade risk validators.
 
 

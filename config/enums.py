@@ -72,3 +72,15 @@ class SentimentRegime(str, Enum):
             return cls.GREED
         else:
             return cls.EXTREME_GREED
+
+
+@unique
+class StrategyAction(str, Enum):
+    """Actions recommended by the strategy recommendation engine."""
+
+    BUY = "BUY"
+    SELL = "SELL"
+    HOLD = "HOLD"
+    REDUCE_LEVERAGE = "Reduce Leverage"
+    INCREASE_POSITION_SIZE = "Increase Position Size"
+    AVOID_TRADING = "Avoid Trading"
