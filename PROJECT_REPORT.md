@@ -350,9 +350,9 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] Feature Engineering & Chronological Merger (Phase 4 - Calculate positions, values, volatility, PnLs and perform nearest-date merging)
 - [x] Analytics Engine (Phase 5 - Core sub-analysis metrics: trader, market, sentiment, time, risk, correlation, and performance analysis)
 - [x] Statistical Analysis Engine (Phase 6 - Classical significance testing: descriptive stats, multi-method correlation, Independent T-Test, Mann-Whitney U, ANOVA, Chi-Square, distribution/normality tests, confidence intervals, effect sizes, and natural language formatting)
+- [x] Charting & Visualization Engine (Phase 7 - Static matplotlib plots, interactive plotly plots, and unified dashboard assembly)
 
 ### Pending Tasks
-- [ ] Create Plotly and static charts (Phase 7)
 - [ ] Write report compilation logic (Phase 8)
 - [ ] Code strategy recommendation engine (Phase 9)
 - [ ] Develop Binance Futures Testnet trading client (Phase 10)
@@ -362,6 +362,10 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## Version History
+
+### Version 0.7.0 (2026-07-01)
+- **Status**: Charting & Visualization Engine Completed.
+- **Details**: Built publication-quality static chart exporters using Matplotlib and Seaborn, and interactive, responsive chart exporters using Plotly. Developed customized functions for cumulative PnL lines, daily profit/loss bars, return distribution histograms, win/loss donut charts, sentiment regime returns (violin/box), symbol performance ranking, trader rankings, UTC session activity heatmaps, numerical correlation heatmaps, and sentiment scatter plots with regression trend lines. Added a unified dark-mode HTML dashboard assembler. All tests pass with full code coverage.
 
 ### Version 0.6.0 (2026-07-01)
 - **Status**: Statistical Analysis Engine Completed.
@@ -397,7 +401,7 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## AI Continuation Notes
-- To continue the project, refer to the next roadmap item: **Phase 7: Charting & Visualization**.
-- Build interactive Plotly chart generators for cumulative PnL lines, win/loss pie charts, and Fear & Greed sentiment return box/violin plots.
+- To continue the project, refer to the next roadmap item: **Phase 8: Report Compilers (HTML/PDF/Markdown)**.
+- Develop compilers to combine data analyses, statistical tables, and newly generated charts into a unified executive report (PDF and Markdown format).
 
 
