@@ -6,14 +6,9 @@ import pandas as pd
 import pytest
 
 from config import Environment, settings
-from utils import (
-    ValidationError,
-    clean_column_names,
-    parse_timestamp_to_datetime,
-    validate_decimal_precision,
-    validate_in_range,
-    validate_is_positive,
-)
+from utils import (ValidationError, clean_column_names,
+                   parse_timestamp_to_datetime, validate_decimal_precision,
+                   validate_in_range, validate_is_positive)
 
 
 def test_settings_loaded() -> None:

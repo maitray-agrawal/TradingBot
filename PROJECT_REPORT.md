@@ -344,9 +344,10 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] CI Pipeline Configuration (`.github/workflows/ci.yml`)
 - [x] Entry Point Verification Sequence (`main.py`)
 - [x] Unit Testing Suite (`tests/test_infra.py`)
+- [x] Ingest data files dynamically (Phase 2 - Dataset Ingestion Engine: file scanners, dataset type detector, schema mapper, validation rules, data registry, mock upload handlers, and master dataset loader)
+- [x] Unit Testing Suite for Ingestion Engine (`tests/test_ingestion.py` covering multiple file types and failure conditions)
 
 ### Pending Tasks
-- [ ] Ingest data files dynamically (Phase 2)
 - [ ] Normalize and clean headers (Phase 3)
 - [ ] Build feature engineering modules (Phase 4)
 - [ ] Implement dataset merging logic (Phase 4)
@@ -361,6 +362,10 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## Version History
+
+### Version 0.3.0 (2026-07-01)
+- **Status**: Dataset Ingestion Engine Completed.
+- **Details**: Created the production-grade Ingestion Engine under `analytics/ingestion/` including: `DatasetRegistry`, `SchemaMapper`, `DatasetDetector`, `DataValidator`, `FileScanner`, `UploadHandler`, and the master `DatasetLoader`. Supports CSV, Excel (XLSX), JSON, and Parquet formats. Implemented comprehensive unit tests suite in `tests/test_ingestion.py` covering all formats, invalid schemas, empty files, corrupted sheets, and unknown datasets. Verified end-to-end functionality via CLI entrypoint diagnostics.
 
 ### Version 0.2.0 (2026-07-01)
 - **Status**: Infrastructure & Scaffold Completed.
@@ -380,6 +385,6 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## AI Continuation Notes
-- To continue the project, refer to the next roadmap item: **Phase 2: Data Ingestion**.
-- Ingestion files will go under `analytics/ingestion/`. You should create a detector there that scans the target folders and automatically classifies raw datasets.
+- To continue the project, refer to the next roadmap item: **Phase 3: Preprocessing & Cleaning**.
+- Ingestion files are now successfully loaded and classified. The next step is to clean these dataframes (deduplication, symbol normalizer, uppercase formatting, timestamp alignment to microsecond-precision timezone-naive `datetime64[ns]`, trade side validation to BUY/SELL, and threshold/outlier anomaly filtering).
 

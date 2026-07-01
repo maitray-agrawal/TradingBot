@@ -1,0 +1,70 @@
+{
+    "binance_futures_trades.csv": {
+        "name": "binance_futures_trades.csv",
+        "file_path": "D:\\PROJECTS\\TradingBOT\\data\\raw\\binance_futures_trades.csv",
+        "dataset_type": "TRADER_HISTORY",
+        "rows": 4,
+        "columns": 7,
+        "memory_usage_bytes": 434,
+        "file_size_bytes": 279,
+        "column_types": {
+            "account_id": "str",
+            "symbol": "str",
+            "execution_price": "float64",
+            "side": "str",
+            "size": "float64",
+            "closed_pnl": "float64",
+            "timestamp": "datetime64[ms]"
+        },
+        "null_counts": {
+            "account_id": 0,
+            "symbol": 0,
+            "execution_price": 0,
+            "side": 0,
+            "size": 0,
+            "closed_pnl": 0,
+            "timestamp": 0
+        },
+        "duplicate_count": 0,
+        "load_time_seconds": 0.006482699973275885,
+        "checksum": "e5bd3ca35e0036b79955706851e4a4041768143b36f13ec20927116f5a16bb09",
+        "last_modified": "2026-07-01T17:38:22.180545",
+        "target_columns_found": [
+            "account_id",
+            "symbol",
+            "execution_price",
+            "side",
+            "size",
+            "closed_pnl",
+            "timestamp"
+        ]
+    },
+    "fear_greed_index.xlsx": {
+        "name": "fear_greed_index.xlsx",
+        "file_path": "D:\\PROJECTS\\TradingBOT\\data\\uploads\\fear_greed_index.xlsx",
+        "dataset_type": "FEAR_GREED",
+        "rows": 4,
+        "columns": 3,
+        "memory_usage_bytes": 248,
+        "file_size_bytes": 4980,
+        "column_types": {
+            "timestamp": "datetime64[us]",
+            "value": "int64",
+            "classification": "str"
+        },
+        "null_counts": {
+            "timestamp": 0,
+            "value": 0,
+            "classification": 0
+        },
+        "duplicate_count": 0,
+        "load_time_seconds": 0.00723320001270622,
+        "checksum": "2bae8c47b515ded39a3e88ffdd30f51a6bb91c79f434cb02e9929fb4cbca45b2",
+        "last_modified": "2026-07-01T17:38:22.391860",
+        "target_columns_found": [
+            "timestamp",
+            "value",
+            "classification"
+        ]
+    }
+}

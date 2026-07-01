@@ -151,3 +151,15 @@ def setup_logging(level_name: str = "INFO") -> None:
     bot_logger.addHandler(bot_handler)
 
     logging.info("Logging infrastructure successfully configured.")
+
+
+def get_logger(name: str) -> logging.Logger:
+    """Helper to retrieve a logger by name.
+
+    Args:
+        name: Logger name (e.g. 'analytics', 'bot', 'system').
+
+    Returns:
+        logging.Logger instance.
+    """
+    return logging.getLogger(name)
