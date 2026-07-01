@@ -348,7 +348,8 @@ Structured log output is managed via the standard logging module, routed to file
 - [x] Unit Testing Suite for Ingestion Engine (`tests/test_ingestion.py` covering multiple file types and failure conditions)
 - [x] Preprocessing & Cleaning (Phase 3 - Cleanse headers, casing, values, handle timezone-naive UTC timestamp formats, drop empty inputs, handle duplicates)
 - [x] Feature Engineering & Chronological Merger (Phase 4 - Calculate positions, values, volatility, PnLs and perform nearest-date merging)
-- [x] Analytics & Statistical Intelligence Engine (Phase 5 & 6 - Calculate sub-analysis metrics, run correlation/distribution profiling, summarize textual insights, and export results)
+- [x] Analytics Engine (Phase 5 - Core sub-analysis metrics: trader, market, sentiment, time, risk, correlation, and performance analysis)
+- [x] Statistical Analysis Engine (Phase 6 - Classical significance testing: descriptive stats, multi-method correlation, Independent T-Test, Mann-Whitney U, ANOVA, Chi-Square, distribution/normality tests, confidence intervals, effect sizes, and natural language formatting)
 
 ### Pending Tasks
 - [ ] Create Plotly and static charts (Phase 7)
@@ -361,6 +362,10 @@ Structured log output is managed via the standard logging module, routed to file
 ---
 
 ## Version History
+
+### Version 0.6.0 (2026-07-01)
+- **Status**: Statistical Analysis Engine Completed.
+- **Details**: Built modular calculators for descriptive statistics, Pearson/Spearman/Kendall correlation, Independent T-Test, Mann-Whitney U, One-Way ANOVA, Chi-Square, normality (Shapiro-Wilk, D'Agostino, 1-sample KS), 2-sample KS tests, confidence intervals (Wilson score and Student-t), and effect sizes (Cohen's d and Eta-squared). Completed natural language observation generator and integrated everything under the master StatisticsEngine. Wrote tests/test_statistics.py with full test coverage.
 
 ### Version 0.5.0 (2026-07-01)
 - **Status**: Analytics & Intelligence Engine Completed.
@@ -394,4 +399,5 @@ Structured log output is managed via the standard logging module, routed to file
 ## AI Continuation Notes
 - To continue the project, refer to the next roadmap item: **Phase 7: Charting & Visualization**.
 - Build interactive Plotly chart generators for cumulative PnL lines, win/loss pie charts, and Fear & Greed sentiment return box/violin plots.
+
 
